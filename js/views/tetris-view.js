@@ -1,4 +1,4 @@
-import {currentPiece, grid} from '../models/tetris-game.js';
+import {grid} from '../models/tetris-game.js';
 import {pieces} from "../models/tetris-piece.js";
 import TetrisControllers from "../controllers/tetris-controllers.js";
 
@@ -109,10 +109,6 @@ class TetrisView {
             this.game.startNewGame();
             this.update(this.game);
             TetrisControllers.bindEvents(this.game);
-
-            //const tetrisGameElement = document.getElementById('tetris');
-            //tetrisGameElement.addEventListener('mousemove', movePiece);
-
         } else {
             // Sinon, décrémentez le compte à rebours et relancez la fonction
             setTimeout(() => this.countdown(seconds - 1), 1000);

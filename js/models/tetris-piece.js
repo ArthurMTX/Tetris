@@ -12,8 +12,8 @@ class TetrisPiece {
         this.shape = shape;
         this.color = color;
         this.currentRotation = 0;
-        this.row = row - 1;
-        this.col = col - 1;
+        this.row = row;
+        this.col = col;
 
         this.blocks = [];
 
@@ -33,21 +33,12 @@ class TetrisPiece {
                 // Si la case est pleine
                 if (this.pattern[i][j] !== 0) {
                     // On ajoute a un tableau block
-                    this.blocks.push({ row: j, col : i});
+                    this.blocks.push({col: this.coords.col + j, row: this.coords.row + i});
                 }
             }
         }
     }
 
-    // Méthode qui déplace la pièce tout en bas
-    moveBottom(){
-        this.row = findBottom();
-    }
-
-    // Méthode qui déplace la pièce vers le bas
-    moveDown() {
-        this.row--;
-    }
 
     // Méthode qui fait tourner la pièce dans le sens horaire
     rotateClockwise() {

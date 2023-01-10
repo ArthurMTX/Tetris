@@ -41,20 +41,13 @@ class TetrisGame {
         // Couleur de la pièce aléatoire
         const color = 'cyan,blue,orange,purple,green,yellow,red'.split(',')[index];
 
-        console.log(
-            'ID : ' + id,
-            'Type : ' + type,
-            'Color : ' + color,
-        );
-
         // Créez une nouvelle pièce Tetris en utilisant la forme choisie
         // et en la positionnant en haut de la grille de jeu
-        let newPiece = new TetrisPiece(id, type, color, gridCols / 2 - 1, -1)
+        let newPiece = new TetrisPiece(id, type, color, parseInt(gridCols / 3), -1)
         pieces.push(newPiece)
 
         // Pour chaque bloc de la pièce, ajoutez la pièce à la grille
         newPiece.blocks.forEach(block => {
-            console.log(block)
             grid[block.row][block.col] = newPiece.id;
         });
 
@@ -112,6 +105,14 @@ export function movePiece(direction) {
         }
     }
 
+    // Retourne l'identifiant de la pièce, 0 si aucune
+    function getCaseValue(row, col) {
+        if (row < 0 || row >= gridHeight || col < 0 || col >= gridWidth) {
+            return 0;
+        }
+        return grid[row][col];
+    }
+
     points.forEach(point => {
         if (point.col === 0 && direction === 'left') {
             console.log('Impossible de bouger vers la gauche')
@@ -125,10 +126,21 @@ export function movePiece(direction) {
             console.log('Impossible de bouger vers le bas')
             impossibleMouvement = true
         }
+        if (getCaseValue(point.row + 1, point.col) !== 0) {
+            console.log('Impossible de bouger vers le bas, il y a une pièce en dessous')
+            impossibleMouvement = true
+        }
+        if (getCaseValue(point.row, point.col + 1) !== 0) {
+            console.log('Impossible de bouger vers la droite, il y a une pièce à droite')
+        }
+        if (getCaseValue(point.row, point.col - 1) !== 0) {
+            console.log('Impossible de bouger vers la gauche, il y a une pièce à gauche')
+            impossibleMouvement = true
+        }
     })
 
     if (!impossibleMouvement){
-        // Déplacez la pièce dans la direction spécifiée
+        // Déplacer la pièce dans la direction spécifiée
         switch (direction) {
             case 'left':
                 points.forEach(point => {

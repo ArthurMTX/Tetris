@@ -28,12 +28,10 @@ class TetrisController {
             }
             if (event.key === 'q' || event.key === 'ArrowLeft') {
                 // Déplacez la pièce vers la gauche
-                console.log(event.key)
                 movePiece('left');
             }
             if (event.key === ' ' || event.key === 'ArrowDown') {
                 // Déplacez la pièce vers le bas
-                console.log(event.key)
                 movePiece('down');
             }
         });
@@ -41,6 +39,7 @@ class TetrisController {
         setInterval(() => {
             if (movePiece('down') === 0) {
                 // Si la pièce ne peut pas descendre, on en crée une nouvelle
+                console.log('new piece');
                 TetrisGame.createRandomPiece();
             }
         }, 1000);

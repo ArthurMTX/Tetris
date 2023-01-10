@@ -1,4 +1,4 @@
-import TetrisGame, {movePiece} from './models/tetris-game.js';
+import TetrisGame from './models/tetris-game.js';
 import TetrisView from './views/tetris-view.js';
 import TetrisController from './controllers/tetris-controllers.js';
 
@@ -19,6 +19,7 @@ function start() {
 
     view.countdown(3);
 }
+
 
 document.querySelector('#start').addEventListener('click', () => {
     if (!gameStarted){
