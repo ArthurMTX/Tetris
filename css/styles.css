@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap'); /* Import de police distante */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'); /* Import de police distante */
+@font-face {
+  font-family: 'Tetrominoes';
+  src: url('../Assets/fonts/tetrominoes.eot'); /* IE9 Compat Modes */
+  src: url('../Assets/fonts/tetrominoes.woff2') format('woff2'), /* Super Modern Browsers */
+       url('../Assets/fonts/tetrominoes.woff') format('woff'), /* Pretty Modern Browsers */
+       url('../Assets/fonts/tetrominoes.ttf')  format('truetype'); /* Safari, Android, iOS */
+}
+
+/* Réinitialise les styles par défaut des éléments */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#menu{
+    /* Make menu fullscreen and OVER everything */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+
+    background-image: linear-gradient(45deg, rgba(67, 67, 67, 1) 0%, rgba(0, 0, 0, 0.95) 100%);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    transition: 1s;
+}
+
+#menu.hidden{
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+#menu .title{
+    margin-top: 20vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#menu .title h1{
+    font-family: 'Tetrominoes', cursive;
+    font-size: 5rem;
+    color: white;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    animation: titleAnimation 1s infinite;
+}
+
+@keyframes titleAnimation {
+    0%,100% {
+        transform: scale(1) rotate(0deg);
+    }
+    33% {
+        transform: scale(1.05) rotate(1deg);
+    }
+    66% {
+        transform: scale(1.1) rotate(-1deg);
+    }
+}
+
+#menu #settings .title{
+    font-family: 'Press Start 2P', sans-serif;
+    color: white;
+    margin-top: 2vh;
+    font-size: 1.5rem;
+}
+
+#menu #settings .form{
+    margin-top: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+#menu #settings .form input{
+    margin: 0 1vw;
+}
+
+#menu #settings #start{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5vh auto;
+    font-family: 'Press Start 2P', sans-serif;
+    font-size: 2rem;
+}
+
+.rainbow {
+    background: linear-gradient(to right, #6666ff, #0099ff , #00ff00, #ff3399, #6666ff)!important;
+    -webkit-background-clip: text!important;
+    background-clip: text!important;
+    color: transparent!important;
+    animation: rainbow 6s ease-in-out infinite!important;
+    background-size: 400% 100%!important;
+}
+
+@keyframes rainbow {
+    0%,100% {
+        background-position: 0 0!important;
+    }
+    50% {
+        background-position: 100% 0!important;
+    }
+}
+
+/* Définit la taille de la page */
+#game{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Style de base de l'élément canvas */
+#tetris {
+    display: block;
+    margin: auto;
+    border: 2px solid #fff;
+}
