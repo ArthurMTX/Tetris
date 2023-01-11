@@ -39,7 +39,6 @@ class TetrisPiece {
         }
     }
 
-
     // Méthode qui fait tourner la pièce dans le sens horaire
     rotateClockwise() {
         this.currentRotation = (this.currentRotation + 1) % this.pattern.length;

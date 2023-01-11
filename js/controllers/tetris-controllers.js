@@ -16,7 +16,7 @@ class TetrisController {
 
     // Méthode qui met à jour l'interface utilisateur
     updateView() {
-        this.view.drawGrid()
+        this.view.drawGrid();
     }
 
     // Méthode qui gère les interactions utilisateur
@@ -33,6 +33,10 @@ class TetrisController {
             if (event.key === ' ' || event.key === 'ArrowDown') {
                 // Déplacez la pièce vers le bas
                 movePiece('down');
+            }
+            if (event.key === 'z' || event.key === 'ArrowUp') {
+                // Faites pivoter la pièce
+
             }
         });
 
