@@ -1,13 +1,26 @@
 import TetrisPiece, {pieces} from "./tetris-piece.js";
 import {blockSize, refreshBoard} from "../views/tetris-view.js";
 
+// Variable qui contient la pièce actuelle
 export let currentPiece;
+
+// Variable qui contient la prochaine pièce
 export let nextPiece;
+
+// Variable qui contient la grille de jeu
 export let grid;
+
+// Variable qui contient le nombre de colonnes de la grille
 let gridCols;
+
+// Variable qui contient le nombre de lignes de la grille
 let gridRows;
 
-// Classe qui représente le jeu Tetris
+/// Classe qui gère le démarrage du jeu
+///
+/// Paramétres :
+/// rows : nombre de lignes de la grille
+/// cols : nombre de colonnes de la grille
 class TetrisGame {
     constructor(rows, cols) {
         gridRows = rows;
@@ -15,6 +28,10 @@ class TetrisGame {
         grid = this.createEmptyGrid();
     }
 
+    /// Fonction qui crée une grille vide
+    ///
+    /// Paramétres :
+    /// Aucun
     createEmptyGrid() {
         // Modifie la taille du canvas en fonction de la taille de la grille
         this.canvas = document.querySelector('#tetris');
@@ -22,8 +39,12 @@ class TetrisGame {
         this.canvas.height = gridRows * blockSize;
 
         const grid = [];
+
+        // Crée une grille vide remplie de 0
+        // Pour chaque ligne, crée une nouvelle ligne
         for (let row = 0; row < gridRows; row++) {
             grid[row] = [];
+            // Pour chaque colonne, ajoute un 0
             for (let col = 0; col < gridCols; col++) {
                 grid[row][col] = 0;
             }
@@ -31,37 +52,45 @@ class TetrisGame {
         return grid;
     }
 
+    /// Fonction qui crée une nouvelle pièce
+    ///
+    /// Paramétres :
+    /// Aucun
     static createRandomPiece() {
+        // Crée un nouvel identifiant pour la pièce
         const id = (pieces.length + 1)
 
-        // Choisissez aléatoirement une des 7 formes de pièce Tetris
+        // Type de pièce aléatoire
         const index = Math.floor(Math.random() * 7);
         const type = 'IJLOSTZ'[index];
 
-        // Couleur de la pièce aléatoire
+        // Couleur de pièce aléatoire
         const color = 'cyan,blue,orange,purple,green,yellow,red'.split(',')[index];
 
-        // Créez une nouvelle pièce Tetris en utilisant la forme choisie
-        // et en la positionnant en haut de la grille de jeu
+        // Crée une nouvelle pièce Tetris et l'ajoute au tableau des pièces
         let newPiece = new TetrisPiece(id, type, color, parseInt(gridCols / 3), -1, 0)
         pieces.push(newPiece)
 
-        // Pour chaque bloc de la pièce, ajoutez la pièce à la grille
+        // Pour chaque bloc de la pièce, ajoute l'id de la pièce à la grille
         newPiece.blocks.forEach(block => {
             grid[block.row][block.col] = newPiece.id;
         });
 
+        // Rafraichit la grille
         refreshBoard(grid)
 
         return newPiece;
     }
 
-    // Méthode qui initialise une nouvelle partie
+    /// Méthode qui démarre une nouvelle partie
+    ///
+    /// Paramétres :
+    /// Aucun
     startNewGame() {
-        // Générer une nouvelle pièce Tetris
+        // Crée une nouvelle pièce 
         currentPiece = TetrisGame.createRandomPiece();
 
-        // Réinitialiser le score du joueur
+        // Réinitialise le score 
         this.score = 0;
         this.gameOver = false;
     }
@@ -75,72 +104,112 @@ class TetrisGame {
     endGame() {
         // ...
     }
-
-    static getInstance() {
-        return this;
-    }
 }
 
+/// Fonction qui déplace la pièce
+///
+/// Paramétres :
+/// direction : direction du déplacement 
 export function movePiece(direction) {
+    // Récupère la dernière pièce du tableau
     currentPiece = pieces[pieces.length - 1];
+
+    // Tableau qui contient les points de la pièce
     let points = []
+
+    // Tableau qui contient les nouveaux points de la pièce
     let newPoints = []
+    
+    // Variable qui contient si le mouvement est impossible
     let impossibleMouvement = false;
 
+    // Récupère la hauteur et la largeur de la grille
     let gridHeight = grid.length;
     let gridWidth = grid[0].length;
 
-    // Parcourir grid pour trouver les lignes pleines de l'id de la pièce
+    // Parcourt la grille pour récupérer les points de la pièce actuelle
+    // Pour chaque ligne
     for (let row = 0; row < gridHeight; row++) {
+        // Pour chaque colonne
         for (let col = 0; col < gridWidth; col++) {
+            // Si l'identifiant de la pièce est égal à l'identifiant de la pièce actuelle
             if (grid[row][col] === currentPiece.id) {
-                // Stocker les points dans un tableau
+                // Ajoute le point à la liste des points
                 points.push({
                     row: row,
                     col: col
                 })
-                // Mettre a 0 ces points
+                
+                // Supprime l'identifiant de la pièce de la grille
                 grid[row][col] = 0
             }
         }
     }
-    // Retourne l'identifiant de la pièce, 0 si aucune
+    
+    /// Fonction qui récupère la valeur d'une case
+    ///
+    /// Paramétres :
+    /// row : ligne de la case
+    /// col : colonne de la case
     function getCaseValue(row, col) {
+        // Si la ligne ou la colonne est en dehors de la grille, retourne 0
         if (row < 0 || row >= gridHeight || col < 0 || col >= gridWidth) {
             return 0;
         }
+
+        // Retourne la valeur de la case
         return grid[row][col];
     }
 
+    // Parcourt les points de la pièce
     points.forEach(point => {
-        if (point.col === 0 && direction === 'left') {
-            console.log('Impossible de bouger vers la gauche')
-            impossibleMouvement = true
+        switch (direction) {
+            case "left":
+                if (point.col === 0) {
+                    console.log("Impossible de bouger vers la gauche");
+                    impossibleMouvement = true;
+                    break;
+                }
+                if (getCaseValue(point.row, point.col - 1) !== 0) {
+                    console.log("Impossible de bouger vers la gauche, il y a une pièce à gauche");
+                    impossibleMouvement = true;
+                    break;
+                }
+                break;
+            case "right":
+                if (point.col === gridWidth - 1) {
+                    console.log("Impossible de bouger vers la droite");
+                    impossibleMouvement = true;
+                    break;
+                }
+                if (getCaseValue(point.row, point.col + 1) !== 0) {
+                    console.log("Impossible de bouger vers la droite, il y a une pièce à droite");
+                    impossibleMouvement = true;
+                    break;
+                }
+                break;
+            case "down":
+                if (point.row === gridHeight - 1) {
+                    console.log("Impossible de bouger vers le bas");
+                    impossibleMouvement = true;
+                    break;
+                }
+                if (getCaseValue(point.row + 1, point.col) !== 0) {
+                    impossibleMouvement = true;
+                    console.log("Impossible de bouger vers le bas, il y a une pièce en dessous");
+                    break;
+                }
+                break;
+            default:
+                break;
         }
-        if (point.col === gridWidth - 1 && direction === 'right') {
-            console.log('Impossible de bouger vers la droite')
-            impossibleMouvement = true
-        }
-        if (point.row === gridHeight - 1 && direction === 'down') {
-            console.log('Impossible de bouger vers le bas')
-            impossibleMouvement = true
-        }
-        if (getCaseValue(point.row + 1, point.col) !== 0 && direction === 'down') {
-            console.log('Impossible de bouger vers le bas, il y a une pièce en dessous')
-            impossibleMouvement = true
-        }
-        if (getCaseValue(point.row, point.col + 1) !== 0 && direction === 'right') {
-            console.log('Impossible de bouger vers la droite, il y a une pièce à droite')
-            impossibleMouvement = true
-        }
-        if (getCaseValue(point.row, point.col - 1) !== 0 && direction === 'left') {
-            console.log('Impossible de bouger vers la gauche, il y a une pièce à gauche')
-            impossibleMouvement = true
-        }
-    })
+    });
+    
 
+    // Si le mouvement n'est pas impossible
     if (!impossibleMouvement){
-        // Déplacer la pièce dans la direction spécifiée
+
+        // Déplacer la pièce dans la direction spécifiée en parcourant les points de la pièce
         switch (direction) {
             case 'left':
                 points.forEach(point => {
@@ -157,9 +226,8 @@ export function movePiece(direction) {
                     grid[point.row][point.col] = currentPiece.id
                 })
 
-                refreshBoard(grid)
+                break;
 
-                return 1;
             case 'right':
                 points.forEach(point => {
                     if (point.col < grid[0].length - 1) {
@@ -175,9 +243,8 @@ export function movePiece(direction) {
                     grid[point.row][point.col] = currentPiece.id
                 })
 
-                refreshBoard(grid)
+                break;
 
-                return 1;
             case 'down':
                 points.forEach(point => {
                     if (point.row < grid.length - 1) {
@@ -193,16 +260,22 @@ export function movePiece(direction) {
                     grid[point.row][point.col] = currentPiece.id
                 })
 
-                refreshBoard(grid)
-
-                return 1;
+                break;
         }
+
+        // Actualiser l'affichage de la grille
+        refreshBoard(grid)
+        return 1;
+
     } else {
+
         // Réinitialiser le mouvement
         points.forEach(point => {
             grid[point.row][point.col] = currentPiece.id
         })
+
         return 0;
+
     }
 }
 

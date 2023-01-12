@@ -3,11 +3,18 @@ import {refreshBoard} from "../views/tetris-view.js";
 
 export let pieces = [];
 
-// Classe qui représente une pièce Tetris
+/// Classe qui gère les pièces
+///
+/// Paramétres :
+/// id : identifiant de la pièce
+/// shape : forme de la pièce (I, J, L, O, S, T, Z)
+/// color : couleur de la pièce
+/// col : colonne de la pièce
+/// row : ligne de la pièce
+/// rotation : rotation de la pièce
 class TetrisPiece {
     constructor(id, shape, color, col, row, rotation) {
         this.id = id;
-
         this.shape = shape;
         this.color = color;
         this.col = col;
@@ -16,30 +23,33 @@ class TetrisPiece {
 
         this.blocks = [];
 
-        // Pattern de la pièce en fonction de sa forme
+        // Paterne de la pièce en fonction de sa forme
         this.pattern = this.getPattern(shape);
 
         // Dimension de la pièce en fonction de son paterne
         this.cols = this.pattern[0].length;
         this.rows = this.pattern.length;
 
-        // Coordonnées de la pièce
+        // Coordonnées de la pièce 
         this.coords = { row: row, col : col}
 
         // Pour chaque case de la pièce
         for (let i = 0; i < this.rows; i++) {
             for (let j = 0; j < this.cols; j++) {
-                // Si la case est pleine
+                // Si la case est pleine (différente de 0)
                 if (this.pattern[i][j] !== 0) {
-                    // On ajoute a un tableau block
+                    // Ajoute les coordonnées de la case à la liste des blocs de la pièce
                     this.blocks.push({col: this.coords.col + j, row: this.coords.row + i});
                 }
             }
         }
     }
 
+    /// Méthode qui retourne le paterne de la pièce en fonction de sa forme
+    ///
+    /// Paramétres :
+    /// shape : forme de la pièce (I, J, L, O, S, T, Z)
     getPattern(shape) {
-        // retourne le pattern de la pièce en fonction de shape et de la rotation
         switch (shape) {
             case 'I':
                 return [
@@ -85,22 +95,35 @@ class TetrisPiece {
                     [7, 7, 0],
                     [0, 7, 7]
                 ];
+            default:
+                throw new Error('Forme de pièce invalide');
         }
     }
 
-    // Méthode qui retourne les coordonnées de la pièce dans l'espace de jeu
-    static getCoords(currentPiece) {
+    /// Méthode qui retourne les coordonnées de la pièce
+    ///
+    /// Paramétres :
+    /// piece : pièce 
+    static getCoords(piece) {
         let coords = [];
-        for (let row = 0; row < currentPiece.rows; row++) {
-            for (let col = 0; col < currentPiece.cols; col++) {
-                if (currentPiece.pattern[row][col] === 1) {
-                    coords.push([currentPiece.row + row, currentPiece.col + col]);
+
+        // Pour chaque case de la pièce (différente de 0), 
+        // ajoute les coordonnées de la case à la liste des coordonnées de la pièce
+        for (let row = 0; row < piece.rows; row++) {
+            for (let col = 0; col < piece.cols; col++) {
+                if (piece.pattern[row][col] === 1) {
+                    coords.push([piece.row + row, piece.col + col]);
                 }
             }
         }
+
         return coords;
     }
 
+    /// Méthode qui déplace la pièce dans un sens horaire
+    ///
+    /// Paramétres :
+    /// id : identifiant de la pièce
     static rotateClockwise(id) {
         let currentPiece = pieces[--id];
         let newRotation = (currentPiece.currentRotation + 1) % currentPiece.pattern.length;
@@ -119,6 +142,10 @@ class TetrisPiece {
         refreshBoard(grid);
     }
 
+    /// Méthode qui déplace la pièce dans un sens anti-horaire
+    ///
+    /// Paramétres :
+    /// id : identifiant de la pièce
     static rotateCounterClockwise(id) {
         let currentPiece = pieces[id];
         let newRotation = (currentPiece.currentRotation - 1) % currentPiece.pattern.length;
