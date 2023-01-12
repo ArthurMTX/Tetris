@@ -126,14 +126,15 @@ export function movePiece(direction) {
             console.log('Impossible de bouger vers le bas')
             impossibleMouvement = true
         }
-        if (getCaseValue(point.row + 1, point.col) !== 0) {
+        if (getCaseValue(point.row + 1, point.col) !== 0 && direction === 'down') {
             console.log('Impossible de bouger vers le bas, il y a une pièce en dessous')
             impossibleMouvement = true
         }
-        if (getCaseValue(point.row, point.col + 1) !== 0) {
+        if (getCaseValue(point.row, point.col + 1) !== 0 && direction === 'right') {
             console.log('Impossible de bouger vers la droite, il y a une pièce à droite')
+            impossibleMouvement = true
         }
-        if (getCaseValue(point.row, point.col - 1) !== 0) {
+        if (getCaseValue(point.row, point.col - 1) !== 0 && direction === 'left') {
             console.log('Impossible de bouger vers la gauche, il y a une pièce à gauche')
             impossibleMouvement = true
         }
