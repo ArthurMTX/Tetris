@@ -104,7 +104,6 @@ export function movePiece(direction) {
             }
         }
     }
-
     // Retourne l'identifiant de la pièce, 0 si aucune
     function getCaseValue(row, col) {
         if (row < 0 || row >= gridHeight || col < 0 || col >= gridWidth) {

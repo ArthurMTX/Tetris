@@ -8,6 +8,9 @@ const tetrisGameElement = document.getElementById('tetris');
 // Booléen pour savoir si le jeu est commencé ou non
 let gameStarted = false;
 
+const max_cols = document.getElementById("cols").max;
+const max_rows = document.getElementById("rows").max;
+
 // Intancie les objets visuels et logiques du jeu
 const game = new TetrisGame(20, 10);
 const view = new TetrisView(game, tetrisGameElement);
@@ -22,6 +25,11 @@ document.querySelector('#start').addEventListener('click', () => {
 
 // Intancie le contrôle afin de commencer la partie
 document.addEventListener('keydown', (event) => {
+    console.log(cols,rows)
+    if ( cols > max_cols && rows > max_rows){
+        alert("TO MUCH ROW");
+        return 0;
+    }
     if (event.key === ' ' || event.key === 'Enter') {
         if (!gameStarted){
             gameStarted = true;
