@@ -43,7 +43,7 @@ class TetrisGame {
 
         // Créez une nouvelle pièce Tetris en utilisant la forme choisie
         // et en la positionnant en haut de la grille de jeu
-        let newPiece = new TetrisPiece(id, type, color, parseInt(gridCols / 3), -1)
+        let newPiece = new TetrisPiece(id, type, color, parseInt(gridCols / 3), -1, 0)
         pieces.push(newPiece)
 
         // Pour chaque bloc de la pièce, ajoutez la pièce à la grille

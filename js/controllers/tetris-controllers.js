@@ -1,5 +1,6 @@
 import TetrisView from '../views/tetris-view.js';
-import TetrisGame, {movePiece} from "../models/tetris-game.js";
+import TetrisGame, {currentPiece, movePiece} from "../models/tetris-game.js";
+import TetrisPiece from "../models/tetris-piece.js";
 
 // Classe qui représente le contrôleur du jeu Tetris
 class TetrisController {
@@ -34,16 +35,19 @@ class TetrisController {
                 // Déplacez la pièce vers le bas
                 movePiece('down');
             }
-            if (event.key === 'z' || event.key === 'ArrowUp') {
+            if (event.key === 'z') {
                 // Faites pivoter la pièce
-
+                TetrisPiece.rotateClockwise(currentPiece.id);
+            }
+            if (event.key === 's') {
+                // Faites pivoter la pièce
+                TetrisPiece.rotateClockwise(currentPiece.id);
             }
         });
 
         setInterval(() => {
             if (movePiece('down') === 0) {
                 // Si la pièce ne peut pas descendre, on en crée une nouvelle
-                console.log('new piece');
                 TetrisGame.createRandomPiece();
             }
         }, 1000);

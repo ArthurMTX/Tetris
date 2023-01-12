@@ -1,19 +1,18 @@
-function findBottom() {
-    return undefined;
-}
+import {grid} from "./tetris-game.js";
+import {refreshBoard} from "../views/tetris-view.js";
 
 export let pieces = [];
 
 // Classe qui représente une pièce Tetris
 class TetrisPiece {
-    constructor(id, shape, color, col, row) {
+    constructor(id, shape, color, col, row, rotation) {
         this.id = id;
 
         this.shape = shape;
         this.color = color;
-        this.currentRotation = 0;
-        this.row = row;
         this.col = col;
+        this.row = row;
+        this.currentRotation = rotation;
 
         this.blocks = [];
 
@@ -37,18 +36,6 @@ class TetrisPiece {
                 }
             }
         }
-    }
-
-    // Méthode qui fait tourner la pièce dans le sens horaire
-    rotateClockwise() {
-        this.currentRotation = (this.currentRotation + 1) % this.pattern.length;
-        this.pattern = this.getPattern(this.shape);
-    }
-
-    // Méthode qui fait tourner la pièce dans le sens antihoraire
-    rotateCounterClockwise() {
-        this.currentRotation = (this.currentRotation - 1) % this.pattern.length;
-        this.pattern = this.getPattern(this.shape);
     }
 
     getPattern(shape) {
@@ -112,6 +99,42 @@ class TetrisPiece {
             }
         }
         return coords;
+    }
+
+    static rotateClockwise(id) {
+        let currentPiece = pieces[--id];
+        let newRotation = (currentPiece.currentRotation + 1) % currentPiece.pattern.length;
+        let newPattern = currentPiece.getPattern(currentPiece.shape, newRotation);
+        let newCols = newPattern[0].length;
+        let newRows = newPattern.length;
+
+        // Si la pièce est dans la grid
+        if (currentPiece.col + newCols <= grid.cols && currentPiece.row + newRows <= grid.rows) {
+            currentPiece.pattern = newPattern;
+            currentPiece.currentRotation = newRotation;
+            currentPiece.cols = newCols;
+            currentPiece.rows = newRows;
+        }
+
+        refreshBoard(grid);
+    }
+
+    static rotateCounterClockwise(id) {
+        let currentPiece = pieces[id];
+        let newRotation = (currentPiece.currentRotation - 1) % currentPiece.pattern.length;
+        let newPattern = currentPiece.getPattern(currentPiece.shape, newRotation);
+        let newCols = newPattern[0].length;
+        let newRows = newPattern.length;
+
+        // Si la pièce est dans la grid
+        if (currentPiece.col + newCols <= grid.cols && currentPiece.row + newRows <= grid.rows) {
+            currentPiece.pattern = newPattern;
+            currentPiece.currentRotation = newRotation;
+            currentPiece.cols = newCols;
+            currentPiece.rows = newRows;
+        }
+
+        refreshBoard(grid);
     }
 }
 
