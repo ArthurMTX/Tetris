@@ -2,10 +2,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'); /* Import de police distante */
 @font-face {
   font-family: 'Tetrominoes';
-  src: url('../Assets/fonts/tetrominoes.eot'); /* IE9 Compat Modes */
-  src: url('../Assets/fonts/tetrominoes.woff2') format('woff2'), /* Super Modern Browsers */
-       url('../Assets/fonts/tetrominoes.woff') format('woff'), /* Pretty Modern Browsers */
-       url('../Assets/fonts/tetrominoes.ttf')  format('truetype'); /* Safari, Android, iOS */
+  src: url('../Assets/fonts/tetrominoes.eot'); /* IE9+ */
+  src: url('../Assets/fonts/tetrominoes.woff2') format('woff2'), /* Navigateurs modernes (Chrome, Firefox, etc.) */
+       url('../Assets/fonts/tetrominoes.woff') format('woff'), /* Navigateurs moins modernes (Safari, IE, etc.) */
+       url('../Assets/fonts/tetrominoes.ttf')  format('truetype'); /* Navigateurs mobiles (Android, iOS, etc.) */
 }
 
 /* Réinitialise les styles par défaut des éléments */
@@ -15,8 +15,8 @@
     box-sizing: border-box;
 }
 
+/* Définit la taille de la page */
 #menu{
-    /* Make menu fullscreen and OVER everything */
     position: fixed;
     top: 0;
     left: 0;
@@ -31,11 +31,13 @@
     transition: 1s;
 }
 
+/* Classe servant à cacher le menu quand la partie est lancée */
 #menu.hidden{
     transform: translateX(-100%);
     opacity: 0;
 }
 
+/* Style du titre principal */
 #menu .title{
     margin-top: 20vh;
     display: flex;
@@ -43,6 +45,7 @@
     align-items: center;
 }
 
+/* Style du titre principal */
 #menu .title h1{
     font-family: 'Tetrominoes', cursive;
     font-size: 5rem;
@@ -51,6 +54,7 @@
     animation: titleAnimation 1s infinite;
 }
 
+/* Animation du titre */
 @keyframes titleAnimation {
     0%,100% {
         transform: scale(1) rotate(0deg);
@@ -63,6 +67,7 @@
     }
 }
 
+/* Style du titre */
 #menu #settings .title{
     font-family: 'Press Start 2P', sans-serif;
     color: white;
@@ -70,6 +75,7 @@
     font-size: 1.5rem;
 }
 
+/* Style du formulaire */
 #menu #settings .form{
     margin-top: 5vh;
     display: flex;
@@ -78,10 +84,12 @@
     color: white;
 }
 
+/* Style des labels */
 #menu #settings .form input{
     margin: 0 1vw;
 }
 
+/* Style du bouton de démarrage */
 #menu #settings #start{
     display: flex;
     justify-content: center;
@@ -91,23 +99,29 @@
     font-size: 2rem;
 }
 
+/* Animation du titre */
 .rainbow {
-    background: linear-gradient(to right, #6666ff, #0099ff , #00ff00, #ff3399, #6666ff)!important;
-    -webkit-background-clip: text!important;
-    background-clip: text!important;
-    color: transparent!important;
-    animation: rainbow 6s ease-in-out infinite!important;
-    background-size: 400% 100%!important;
+    animation: colorRotate 3s ease-in-out infinite!important;
 }
 
-@keyframes rainbow {
-    0%,100% {
-        background-position: 0 0!important;
+/* Animation de la couleur du texte */
+@keyframes colorRotate {
+    from {
+      color: #6666ff;
+    }
+    10% {
+      color: #0099ff;
     }
     50% {
-        background-position: 100% 0!important;
+      color: #00ff00;
     }
-}
+    75% {
+      color: #ff3399;
+    }
+    100% {
+      color: #6666ff;
+    }
+  }
 
 /* Définit la taille de la page */
 #game{
