@@ -109,6 +109,29 @@ class TetrisView {
             // Sinon, décrémente le compte à rebours et relance la méthode
             setTimeout(() => this.countdown(seconds - 1), 1000);
         }
+
+        let wrap = document.getElementById('countdown_wrap');
+        let i = 9;
+
+        countdown_chrono();
+    }
+
+    countdown_chrono(){
+        if (i < 0) {
+            i = 9;
+            setTimeout(function(){
+                this.countdown_chrono();
+            }, 2000);
+            return false;
+        }
+        wrap.removeAttribute('class');
+        setTimeout(function(){
+            wrap.classList.add('wrap-' + i);
+            setTimeout(function(){
+                i--;
+                this.countdown_chrono();
+            }, 1000);
+        }, 600);
     }
 }
 
