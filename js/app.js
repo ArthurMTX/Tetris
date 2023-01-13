@@ -58,6 +58,7 @@ function start() {
         ' et ' + max_cols + ' pour les colonnes.'
         console.log(gridSizeError);
         alert(gridSizeError);
+        gameStarted = false;
         return;
     }
 

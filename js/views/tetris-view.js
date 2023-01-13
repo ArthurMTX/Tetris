@@ -1,4 +1,4 @@
-import  {grid} from '../models/tetris-game.js';
+import {grid} from '../models/tetris-game.js';
 import {pieces} from "../models/tetris-piece.js";
 import TetrisControllers from "../controllers/tetris-controllers.js";
 
