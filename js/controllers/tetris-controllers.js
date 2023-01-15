@@ -1,6 +1,13 @@
 import TetrisView from '../views/tetris-view.js';
-import TetrisGame, {currentPiece, movePiece} from "../models/tetris-game.js";
+import TetrisGame from "../models/tetris-game.js";
 import TetrisPiece from "../models/tetris-piece.js";
+
+export let pieces;
+export let blockSize;
+export let cols;
+export let rows;
+export let grid;
+export let views;
 
 /// Classe qui gère le contrôleur du jeu
 ///
@@ -8,36 +15,60 @@ import TetrisPiece from "../models/tetris-piece.js";
 /// game : instance de la classe TetrisGame
 /// view : instance de la classe TetrisView
 class TetrisController {
-    constructor(game, view) {
-        this.game = game;
-        this.view = view;
+    constructor(view, model) {
+       // Élement principal pour le jeu
+        const canvas = document.getElementById('tetris');
+
+        // Booléen pour savoir si le jeu est commencé ou non
+        this._gameStarted = false;
+
+        // Intancie les objets visuels et logiques du jeu
+        this._model = new TetrisGame(20, 10);
+        this._view = new TetrisView(model, canvas);
+        this._piece = new TetrisPiece();
+
+        pieces = this._piece.pieces;
+        blockSize = this._view.blockSize;
+        cols = this._model.gridCols;
+        rows = this._model.gridRows;
+        grid = this._model.grid;
+        views = this._view;
+
+        // Intancie le contrôle afin de commencer la partie
+        document.querySelector('#start').addEventListener('click', () => {
+            // Vérifie que le jeu n'est pas déjà commencé
+            if (!this._gameStarted){
+                this._gameStarted = true
+                this.start();
+            }
+        });
+
+        // Intancie le contrôle afin de commencer la partie
+        document.addEventListener('keydown', (event) => {
+            if (event.key === ' ' || event.key === 'Enter') {
+                // Vérifie que le jeu n'est pas déjà commencé
+                if (!this._gameStarted){
+                    this._gameStarted = true;
+                    this.start();
+                }
+            }
+        });
     }
 
-    /// Fonction qui démarre le jeu
-    ///
-    /// Paramétres :
-    /// aucun
-    start() {
-        // Récupère l'intance de la classe TetrisView
-        this.view = new TetrisView(this.game, 'tetris');
-
-        // Dessine la grille
-        this.view.drawGrid();
+    // Getters
+    get model() {
+        return this._model;
     }
 
-    /// Fonction qui met à jour la vue
-    ///
-    /// Paramétres :
-    /// aucun
-    updateView() {
-        this.view.drawGrid();
+    get view() {
+        return this._view;
     }
 
     /// Fonction qui gère les événements clavier
     ///
     /// Paramétres :
     /// aucun
-    static bindEvents() {
+    bindEvents() {
         // Définit les touches de contrôle
         const keyBindings = {
             ArrowRight: 'right',
@@ -46,32 +77,102 @@ class TetrisController {
             q: 'left',
             ArrowDown: 'down',
             ' ': 'down',
-            z: 'rotateClockwise',
-            s: 'rotateClockwise'
+            z: 'rotate',
+            s: 'rotate'
         };
-        
+
         // Écoute les événements clavier
         document.addEventListener('keydown', (event) => {
         const action = keyBindings[event.key];
 
         // Vérifie que la touche est valide
         if (!action) return;
-        
+
         // Vérifie si la touche est une rotation ou un déplacement
-        if (action === 'rotateClockwise') {
-            TetrisPiece.rotateClockwise(currentPiece.id);
+        if (action === 'rotate') {
+            //TetrisPiece.rotateClockwise(currentPiece.id);
         } else {
-            movePiece(action);
+            this.model.movePiece(action);
         }
         });
-        
+
         // Chaque seconde, on déplace la pièce vers le bas
         setInterval(() => {
-            if (movePiece('down') === 0) {
+            if (this.model.movePiece('down') === 0) {
                 // Si la pièce ne peut pas descendre, on en crée une nouvelle
-                TetrisGame.createRandomPiece();
+                this.model.createRandomPiece();
             }
         }, 1000);
+    }
+
+    static refresh(grid) {
+        views.refreshBoard(grid);
+    }
+
+    /// Méthode qui affiche un compte à rebours avant de lancer la partie
+    ///
+    /// Paramétres :
+    /// seconds : nombre de secondes du compte à rebours
+    countdown_chrono(seconds) {
+        // Efface le canvas
+        this.view.ctx.clearRect(0, 0, this.view.canvas.width, this.view.canvas.height);
+
+        // Récupère l'élement countdown
+        let wrap = document.getElementById('countdown');
+
+        // Si le compte à rebours n'est pas terminé, affiche le nombre de secondes restantes
+        // Sinon, cacher la div et lancer la partie
+        if (seconds < 0) {
+            wrap.classList.add('hidden');
+            this.model.startNewGame();
+            this.bindEvents(this.model);
+        } else {
+            wrap.classList.add('wrap-' + seconds);
+            setTimeout(() => {
+                wrap.removeAttribute('class');
+                this.countdown_chrono(--seconds);
+            }, 1000);
+        }
+    }
+
+    /// Fonction qui gère le démarrage du jeu
+    /// Réinstancie les objects visuels et logiques du jeu
+    ///
+    /// Paramétres :
+    /// Aucun
+    start() {
+        // Récupère les valeurs de la taille de la grid
+        const rows = document.querySelector('#rows').value;
+        const cols = document.querySelector('#cols').value;
+
+        // Accéde aux valeurs max de la taille de la grid
+        const max_cols = document.getElementById("cols").max;
+        const max_rows = document.getElementById("rows").max;
+        const min_cols = document.getElementById("cols").min;
+        const min_rows = document.getElementById("rows").min;
+
+        // Vérifie que la taille de la grid est valide
+        if (rows > max_rows ||
+            cols > max_cols ||
+            rows < min_rows ||
+            cols < min_cols) {
+            const gridSizeError = 'La taille de la grille est invalide. Veuillez choisir une taille entre '
+                + min_rows + ' et ' + max_rows + ' pour les lignes et entre ' + min_cols +
+                ' et ' + max_cols + ' pour les colonnes.'
+            console.log(gridSizeError);
+            alert(gridSizeError);
+            this._gameStarted = false;
+            return;
+        }
+
+        // Réinstancie les objets visuels et logiques du jeu
+        const game = new TetrisGame(rows, cols);
+
+        // Cache le menu de début de jeu
+        document.querySelector('#menu').classList.add('hidden');
+
+        // Affiche le compte à rebours
+        this.countdown_chrono(3);
     }
 }
 

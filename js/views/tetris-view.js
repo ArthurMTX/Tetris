@@ -1,12 +1,4 @@
-import {grid} from '../models/tetris-game.js';
-import {pieces} from "../models/tetris-piece.js";
-import TetrisControllers from "../controllers/tetris-controllers.js";
-
-// Variable qui contient la taille d'une cellule
-export let blockSize;
-
-// Variable qui contient le contexte du canvas
-export let ctx;
+import {cols, grid, pieces, rows} from "../controllers/tetris-controllers.js";
 
 /// Classe qui gère l'affichage du jeu
 ///
@@ -14,13 +6,12 @@ export let ctx;
 /// game : instance de la classe TetrisGame
 /// element : élément HTML qui contient le canvas
 class TetrisView {
-    constructor(game, element) {
-        this.game = game;
-        this.element = element;
+    constructor() {
         this.canvas = document.querySelector('#tetris');
-        ctx = this.canvas.getContext('2d');
-        blockSize = 40;
+        this.ctx = this.canvas.getContext('2d');
+        this.blockSize = 40;
     }
+
 
     /// Méthode qui dessine la grille de jeu
     ///
@@ -28,17 +19,17 @@ class TetrisView {
     /// grid : instance de la classe TetrisGame
     update(game) {
         // Efface le canvas
-        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Dessine la grille
         this.drawGrid(game.grid);
 
         // Si le jeu est terminé, affiche un message
         if (game.gameOver) {
-            ctx.fillStyle = '#000';
-            ctx.font = 'bold 40px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('PERDU XD!', this.canvas.width / 2, this.canvas.height / 2);
+            this.ctx.fillStyle = '#000';
+            this.ctx.font = 'bold 40px sans-serif';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('PERDU XD!', this.canvas.width / 2, this.canvas.height / 2);
         }
     }
 
@@ -48,162 +39,116 @@ class TetrisView {
     /// aucun
     drawGrid() {
         // Définit les propriétés du contexte (couleur, épaisseur, etc.)
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 0.5;
-        ctx.background = '#000';
+        this.ctx.strokeStyle = '#fff';
+        this.ctx.lineWidth = 0.5;
+        this.ctx.background = '#000';
 
         // Remplit le canvas avec la couleur de fond
-        ctx.fillStyle = ctx.background;
-        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillStyle = this.ctx.background;
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Dessine les lignes verticales de la grille
-        for (let x = 0; x < this.game.cols; x++) {
-            ctx.beginPath();
-            ctx.moveTo(x * blockSize, 0);
-            ctx.lineTo(x * blockSize, this.game.rows * blockSize);
-            ctx.stroke();
+        for (let x = 0; x < cols; x++) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(x * this.blockSize, 0);
+            this.ctx.lineTo(x * this.blockSize, rows * this.blockSize);
+            this.ctx.stroke();
         }
 
         // Dessine les lignes horizontales de la grille
-        for (let y = 0; y < this.game.rows; y++) {
-            ctx.beginPath();
-            ctx.moveTo(0, y * blockSize);
-            ctx.lineTo(this.game.cols * blockSize, y * blockSize);
-            ctx.stroke();
+        for (let y = 0; y < rows; y++) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, y * this.blockSize);
+            this.ctx.lineTo(cols * this.blockSize, y * this.blockSize);
+            this.ctx.stroke();
         }
 
         // Affiche les coordonnées de chaque cellule
-        for (let y = 0; y < this.game.rows; y++) {
-            for (let x = 0; x < this.game.cols; x++) {
-                ctx.fillStyle = '#fff';
-                ctx.textAlign = 'center';
-                ctx.font = 'bold 15px sans-serif';
-                ctx.fillText(y + ',' + x, x * blockSize + blockSize / 2, y * blockSize + blockSize / 2);
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                this.ctx.fillStyle = '#fff';
+                this.ctx.textAlign = 'center';
+                this.ctx.font = 'bold 15px sans-serif';
+                this.ctx.fillText(y + ',' + x, x * this.blockSize + this.blockSize / 2, y * this.blockSize + this.blockSize / 2);
             }
         }
 
         // Actualise la grille de jeu
-        refreshBoard(grid);
+        this.refreshBoard(grid);
     }
 
-    /// Méthode qui affiche un compte à rebours avant de lancer la partie
+    /// Fonction qui dessine les traits de la grille
     ///
     /// Paramétres :
-    /// seconds : nombre de secondes du compte à rebours
-    countdown(seconds) {
-        // Efface le canvas
-        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    /// gridWidth : largeur de la grille
+    /// gridHeight : hauteur de la grille
+    drawOutlines(gridWidth, gridHeight){
+        // Définit les propriétés du contexte (couleur, épaisseur, etc.)
+        this.ctx.strokeStyle = '#fff';
+        this.ctx.lineWidth = 0.5;
+        this.ctx.background = '#000';
 
-        // Affiche le compte à rebours
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 40px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(seconds, this.canvas.width / 2, this.canvas.height / 2);
+        // Remplit le canvas avec la couleur de fond
+        this.ctx.fillStyle = this.ctx.background;
 
-        // Si le compte à rebours est terminé, lance une nouvelle partie
-        if (seconds <= 0) {
-            this.game.startNewGame();
-            this.update(this.game);
-            TetrisControllers.bindEvents(this.game);
-        } else {
-            // Sinon, décrémente le compte à rebours et relance la méthode
-            setTimeout(() => this.countdown(seconds - 1), 1000);
-        }
-
-        let wrap = document.getElementById('countdown_wrap');
-        let i = 9;
-
-        countdown_chrono();
-    }
-
-    countdown_chrono(){
-        if (i < 0) {
-            i = 9;
-            setTimeout(function(){
-                this.countdown_chrono();
-            }, 2000);
-            return false;
-        }
-        wrap.removeAttribute('class');
-        setTimeout(function(){
-            wrap.classList.add('wrap-' + i);
-            setTimeout(function(){
-                i--;
-                this.countdown_chrono();
-            }, 1000);
-        }, 600);
-    }
-}
-
-/// Fonction qui dessine les traits de la grille
-///
-/// Paramétres :
-/// gridWidth : largeur de la grille
-/// gridHeight : hauteur de la grille
-export function drawOutlines(gridWidth, gridHeight){
-    // Définit les propriétés du contexte (couleur, épaisseur, etc.)
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 0.5;
-    ctx.background = '#000';
-
-    // Remplit le canvas avec la couleur de fond
-    ctx.fillStyle = ctx.background;
-
-    // Dessine les lignes verticales de la grille
-    for (let x = 0; x < gridWidth; x++) {
-        ctx.beginPath();
-        ctx.moveTo(x * blockSize, 0);
-        ctx.lineTo(x * blockSize, gridHeight * blockSize);
-        ctx.stroke();
-    }
-
-    // Dessine les lignes horizontales de la grille
-    for (let y = 0; y < gridHeight; y++) {
-        ctx.beginPath();
-        ctx.moveTo(0, y * blockSize);
-        ctx.lineTo(gridWidth * blockSize, y * blockSize);
-        ctx.stroke();
-    }
-
-    // Affiche les coordonnées de chaque cellule
-    for (let y = 0; y < gridHeight; y++) {
+        // Dessine les lignes verticales de la grille
         for (let x = 0; x < gridWidth; x++) {
-            ctx.fillStyle = '#fff';
-            ctx.textAlign = 'center';
-            ctx.font = 'bold 15px sans-serif';
-            ctx.fillText(y + ',' + x, x * blockSize + blockSize / 2, y * blockSize + blockSize / 2);
+            this.ctx.beginPath();
+            this.ctx.moveTo(x * this.blockSize, 0);
+            this.ctx.lineTo(x * this.blockSize, gridHeight * this.blockSize);
+            this.ctx.stroke();
         }
-    }
-}
 
-/// Fonction qui actualise la grille de jeu
-///
-/// Paramétres :
-/// grid : grille de jeu
-export function refreshBoard(grid) {
-    // Pour chaque valeur de grid, dessine un bloc de la couleur correspondante via l'id de la pièce
-    for (let row = 0; row < grid.length; row++) {
-        for (let col = 0; col < grid[row].length; col++) {
-            // Si la valeur est 0, dessine un bloc noir
-            if (grid[row][col] === 0) {
-                ctx.fillStyle = '#000';
-                ctx.fillRect(col * blockSize, row * blockSize, blockSize, blockSize);
-            } else {
-                // Sinon, dessine un bloc de la couleur de la pièce
-                const pieceId = grid[row][col];
+        // Dessine les lignes horizontales de la grille
+        for (let y = 0; y < gridHeight; y++) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, y * this.blockSize);
+            this.ctx.lineTo(gridWidth * this.blockSize, y * this.blockSize);
+            this.ctx.stroke();
+        }
 
-                const piece = pieces.find(piece => piece.id === pieceId);
-
-                ctx.fillStyle = piece.color;
-                ctx.fillRect(col * blockSize, row * blockSize, blockSize, blockSize);
+        // Affiche les coordonnées de chaque cellule
+        for (let y = 0; y < gridHeight; y++) {
+            for (let x = 0; x < gridWidth; x++) {
+                this.ctx.fillStyle = '#fff';
+                this.ctx.textAlign = 'center';
+                this.ctx.font = 'bold 15px sans-serif';
+                this.ctx.fillText(y + ',' + x, x * this.blockSize + this.blockSize / 2, y * this.blockSize + this.blockSize / 2);
             }
         }
     }
 
-    // Dessine les traits de la grille
-    const gridWidth = grid[0].length;
-    const gridHeight = grid.length;
-    drawOutlines(gridWidth, gridHeight);
+    /// Fonction qui actualise la grille de jeu
+    ///
+    /// Paramétres :
+    /// grid : grille de jeu
+    refreshBoard(grid) {
+         // Pour chaque valeur de grid, dessine un bloc de la couleur correspondante via l'id de la pièce
+        for (let row = 0; row < grid.length; row++) {
+            for (let col = 0; col < grid[row].length; col++) {
+                // Si la valeur est 0, dessine un bloc noir
+                if (grid[row][col] === 0) {
+                    this.ctx.fillStyle = '#000';
+                    this.ctx.fillRect(col * this.blockSize, row * this.blockSize, this.blockSize, this.blockSize);
+                } else {
+                    // Sinon, dessine un bloc de la couleur de la pièce
+                    const pieceId = grid[row][col];
+
+                    // Cherche la bonne pièce via l'ID dans le tableau des pièces via le constroller
+                    const piece = pieces.find(piece => piece.id === pieceId);
+
+                    // Dessine le bloc de la couleur de la pièce correspondante
+                    this.ctx.fillStyle = piece.color;
+                    this.ctx.fillRect(col * this.blockSize, row * this.blockSize, this.blockSize, this.blockSize);
+                }
+            }
+        }
+
+        // Dessine les traits de la grille
+        const gridWidth = grid[0].length;
+        const gridHeight = grid.length;
+        this.drawOutlines(gridWidth, gridHeight);
+    }
 }
 
 export default TetrisView;

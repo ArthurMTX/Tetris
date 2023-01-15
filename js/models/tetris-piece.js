@@ -1,8 +1,3 @@
-import {grid} from "./tetris-game.js";
-import {refreshBoard} from "../views/tetris-view.js";
-
-export let pieces = [];
-
 /// Classe qui gère les pièces
 ///
 /// Paramétres :
@@ -22,6 +17,7 @@ class TetrisPiece {
         this.currentRotation = rotation;
 
         this.blocks = [];
+        this.pieces = [];
 
         // Paterne de la pièce en fonction de sa forme
         this.pattern = this.getPattern(shape);
@@ -96,7 +92,11 @@ class TetrisPiece {
                     [0, 7, 7]
                 ];
             default:
-                throw new Error('Forme de pièce invalide');
+                return [
+                    [0, 0, 0],
+                    [0, 0, 0],
+                    [0, 0, 0]
+                ];
         }
     }
 
@@ -118,50 +118,6 @@ class TetrisPiece {
         }
 
         return coords;
-    }
-
-    /// Méthode qui déplace la pièce dans un sens horaire
-    ///
-    /// Paramétres :
-    /// id : identifiant de la pièce
-    static rotateClockwise(id) {
-        let currentPiece = pieces[--id];
-        let newRotation = (currentPiece.currentRotation + 1) % currentPiece.pattern.length;
-        let newPattern = currentPiece.getPattern(currentPiece.shape, newRotation);
-        let newCols = newPattern[0].length;
-        let newRows = newPattern.length;
-
-        // Si la pièce est dans la grid
-        if (currentPiece.col + newCols <= grid.cols && currentPiece.row + newRows <= grid.rows) {
-            currentPiece.pattern = newPattern;
-            currentPiece.currentRotation = newRotation;
-            currentPiece.cols = newCols;
-            currentPiece.rows = newRows;
-        }
-
-        refreshBoard(grid);
-    }
-
-    /// Méthode qui déplace la pièce dans un sens anti-horaire
-    ///
-    /// Paramétres :
-    /// id : identifiant de la pièce
-    static rotateCounterClockwise(id) {
-        let currentPiece = pieces[id];
-        let newRotation = (currentPiece.currentRotation - 1) % currentPiece.pattern.length;
-        let newPattern = currentPiece.getPattern(currentPiece.shape, newRotation);
-        let newCols = newPattern[0].length;
-        let newRows = newPattern.length;
-
-        // Si la pièce est dans la grid
-        if (currentPiece.col + newCols <= grid.cols && currentPiece.row + newRows <= grid.rows) {
-            currentPiece.pattern = newPattern;
-            currentPiece.currentRotation = newRotation;
-            currentPiece.cols = newCols;
-            currentPiece.rows = newRows;
-        }
-
-        refreshBoard(grid);
     }
 }
 
