@@ -22,18 +22,22 @@ class TetrisView {
     /// Paramétres :
     /// gridWidth : largeur de la grille
     /// gridHeight : hauteur de la grille
-    /// nextPiece : pièce suivante
-    drawNextPieceGrid(gridWidth, gridHeight, nextPiece) {
+    drawNextPieceGrid(gridWidth, gridHeight) {
+        let nextPiece = pieces.find(piece => piece.id === -1);
+
         this.nextPieceCtx.clearRect(0, 0, this.nextPieceCanvas.width, this.nextPieceCanvas.height);
         this.nextPieceCtx.strokeStyle = 'black';
         this.nextPieceCtx.lineWidth = 1;
         this.nextPieceCtx.strokeRect(0, 0, gridWidth * this.blockSize, gridHeight * this.blockSize);
 
-        for (let row = 0; row < gridHeight; row++) {
-            for (let col = 0; col < gridWidth; col++) {
-                if (nextPiece[row][col] !== 0) {
-                    this.nextPieceCtx.fillStyle = pieces[nextPiece[row][col]].color;
-                    this.nextPieceCtx.fillRect(col * this.blockSize, row * this.blockSize, this.blockSize, this.blockSize);
+        for (let i = 0; i < nextPiece.shape.length; i++) {
+            for (let j = 0; j < nextPiece.shape[i].length; j++) {
+                if (nextPiece.shape[i][j] !== 0) {
+                    this.nextPieceCtx.fillStyle = nextPiece.color;
+                    this.nextPieceCtx.fillRect(j * this.blockSize, i * this.blockSize, this.blockSize, this.blockSize);
+                    this.nextPieceCtx.strokeStyle = 'black';
+                    this.nextPieceCtx.lineWidth = 1;
+                    this.nextPieceCtx.strokeRect(j * this.blockSize, i * this.blockSize, this.blockSize, this.blockSize);
                 }
             }
         }
@@ -84,11 +88,8 @@ class TetrisView {
     ///
     /// Paramétres :
     /// grid : grille de jeu
-    refreshBoard(grid) {
-        // Obtiens la pièce suivante
-        //let nextPiece = this.getNextPiece();
-
-         // Pour chaque valeur de grid, dessine un bloc de la couleur correspondante via l'id de la pièce
+    refreshBoard(grid, mode) {
+        // Pour chaque valeur de grid, dessine un bloc de la couleur correspondante via l'id de la pièce
         for (let row = 0; row < grid.length; row++) {
             for (let col = 0; col < grid[row].length; col++) {
                 // Si la valeur est 0, dessine un bloc noir
@@ -113,7 +114,9 @@ class TetrisView {
         const gridWidth = grid[0].length;
         const gridHeight = grid.length;
         this.drawGrid(gridWidth, gridHeight);
-        //this.drawNextPieceGrid(4, 4, nextPiece);
+        if (mode === 'full') {
+            this.drawNextPieceGrid(4, 4);
+        }
     }
 }
 

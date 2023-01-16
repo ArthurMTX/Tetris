@@ -7,7 +7,6 @@ export let blockSize;
 export let cols;
 export let rows;
 export let grid;
-export let nextPiece;
 
 /// Classe qui gère le contrôleur du jeu
 ///
@@ -35,7 +34,7 @@ class TetrisController {
         blockSize = this._view.blockSize;
         cols = this._model.gridCols;
         rows = this._model.gridRows;
-        
+
         this.bindRefreshBoard = this.bindRefreshBoard.bind(this);
         this._model.bindRefreshBoard(this.bindRefreshBoard);
 
@@ -60,8 +59,8 @@ class TetrisController {
         });
     }
     
-    bindRefreshBoard (grid) {
-        this._view.refreshBoard(grid);
+    bindRefreshBoard (grid, nextPiece) {
+        this._view.refreshBoard(grid, nextPiece);
     }
 
     // Getters
@@ -107,18 +106,7 @@ class TetrisController {
 
         // Chaque seconde, on déplace la pièce vers le bas
         setInterval(() => {
-            if (this.model.movePiece('down') === 0) {
-                // Si la pièce ne peut pas descendre, on en crée une nouvelle
-                this.model.currentPiece = this.model.nextPiece;
-                this.model.currentPiece.id = pieces.length;
-
-                this.model.currentPiece.blocks.forEach(block => {
-                    this.model.grid[block.row][block.col] = this.model.currentPiece.id;
-                });
-
-                this.model.nextPiece = this.model.createRandomPiece('ignore');
-                console.log(this.model.nextPiece)
-            }
+            this.model.play();
         }, 1000);
     }
 

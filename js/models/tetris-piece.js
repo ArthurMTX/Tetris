@@ -146,6 +146,32 @@ class TetrisPiece {
 
         return coords;
     }
+
+    rotateClockwise(id,grid) {
+        let currentPiece = this.pieces[--id];
+        let points = []
+        let newPoints = []
+        let impossibleMouvement = false;
+        let gridHeight = grid.length;
+        let gridWidth = grid[0].length;
+        for (let row = 0; row < gridHeight; row++) {
+            // Pour chaque colonne
+            for (let col = 0; col < gridWidth; col++) {
+                // Si l'identifiant de la pièce est égal à l'identifiant de la pièce actuelle
+                if (grid[row][col] === currentPiece.id) {
+                    // Ajoute le point à la liste des points
+                    points.push({
+                        row: row,
+                        col: col
+                    })
+                    console.log(points)
+                    // Supprime l'identifiant de la pièce de la grille
+                    grid[row][col] = 0
+                }
+            }
+        }
+        console.log(points)
+    }
 }
 
 
