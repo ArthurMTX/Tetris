@@ -91,6 +91,7 @@ class TetrisGame {
         this.currentPiece = this.createRandomPiece();
         this.nextPiece = this.createRandomPiece('ignore');
 
+
         // Réinitialise le score 
         this.score = 0;
         this.gameOver = false;
@@ -127,6 +128,7 @@ class TetrisGame {
 
         // Parcourt la grille pour récupérer les points de la pièce actuelle
         // Pour chaque ligne
+        
         for (let row = 0; row < gridHeight; row++) {
             // Pour chaque colonne
             for (let col = 0; col < gridWidth; col++) {
@@ -135,14 +137,17 @@ class TetrisGame {
                     // Ajoute le point à la liste des points
                     points.push({
                         row: row,
-                        col: col
+                        col: col,  
                     })
-
+                    
                     // Supprime l'identifiant de la pièce de la grille
                     this.grid[row][col] = 0
+
                 }
             }
         }
+
+        
 
         /// Fonction qui récupère la valeur d'une case
         ///
