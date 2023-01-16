@@ -8,6 +8,7 @@ export let cols;
 export let rows;
 export let grid;
 export let views;
+export let nextPiece;
 
 /// Classe qui gère le contrôleur du jeu
 ///
@@ -90,8 +91,10 @@ class TetrisController {
 
         // Vérifie si la touche est une rotation ou un déplacement
         if (action === 'rotate') {
-            //TetrisPiece.rotateClockwise(currentPiece.id);
+            // Tourne la pièce
+            //////TetrisPiece.rotateClockwise(currentPiece.id);
         } else {
+            // Déplace la pièce
             this.model.movePiece(action);
         }
         });
@@ -100,7 +103,15 @@ class TetrisController {
         setInterval(() => {
             if (this.model.movePiece('down') === 0) {
                 // Si la pièce ne peut pas descendre, on en crée une nouvelle
-                this.model.createRandomPiece();
+                this.model.currentPiece = this.model.nextPiece;
+                this.model.currentPiece.id = pieces.length;
+
+                this.model.currentPiece.blocks.forEach(block => {
+                    console.log(grid);
+                    grid[block.row][block.col] = this.model.currentPiece.id;
+                });
+
+                this.model.nextPiece = this.model.createRandomPiece('ignore');
             }
         }, 1000);
     }
@@ -173,6 +184,10 @@ class TetrisController {
 
         // Affiche le compte à rebours
         this.countdown_chrono(3);
+    }
+
+    static getNextPiece() {
+        return pieces[Math.floor(Math.random() * pieces.length)];
     }
 }
 

@@ -1,4 +1,4 @@
-import TetrisController, {blockSize, pieces} from "../controllers/tetris-controllers.js";
+import {blockSize, pieces} from "../controllers/tetris-controllers.js";
 import TetrisPiece from "./tetris-piece.js";
 
 /// Classe qui gère le démarrage du jeu
@@ -41,9 +41,15 @@ class TetrisGame {
     ///
     /// Paramétres :
     /// Aucun
-    createRandomPiece() {
+    createRandomPiece(mode) {
         // Crée un nouvel identifiant pour la pièce
-        const id = (pieces.length + 1)
+        let id = null;
+
+        if (mode === 'ignore') {
+            id = -1;
+        } else {
+            id = (pieces.length + 1)
+        }
 
         // Type de pièce aléatoire
         const index = Math.floor(Math.random() * 7);
@@ -56,10 +62,12 @@ class TetrisGame {
         let newPiece = new TetrisPiece(id, type, color, parseInt(this.gridCols / 3), -1, 0)
         pieces.push(newPiece)
 
-        // Pour chaque bloc de la pièce, ajoute l'id de la pièce à la grille
-        newPiece.blocks.forEach(block => {
-            this.grid[block.row][block.col] = newPiece.id;
-        });
+        if (mode !== 'ignore') {
+            // Pour chaque bloc de la pièce, ajoute l'id de la pièce à la grille
+            newPiece.blocks.forEach(block => {
+                this.grid[block.row][block.col] = newPiece.id;
+            });
+        }
 
         // Rafraichit la grille
         TetrisController.refresh(this.grid)
@@ -78,8 +86,11 @@ class TetrisGame {
         // Clear tableau des pièces
         pieces.length = 0;
 
-        // Crée une nouvelle pièce 
+        // Crée une nouvelle pièce
         this.currentPiece = this.createRandomPiece();
+        this.nextPiece = this.createRandomPiece('ignore');
+
+        console.log(this.nextPiece)
 
         // Réinitialise le score 
         this.score = 0;
@@ -101,8 +112,13 @@ class TetrisGame {
     /// Paramétres :
     /// direction : direction du déplacement
     movePiece(direction) {
+        // Tri le tableau des pièces par ordre croissant de leur ID
+        pieces.sort((a, b) => a.id - b.id);
+
         // Récupère la dernière pièce du tableau
         this.currentPiece = pieces[pieces.length - 1];
+
+        console.log(this.currentPiece)
 
         // Tableau qui contient les points de la pièce
         let points = []
@@ -141,6 +157,7 @@ class TetrisGame {
         /// Paramétres :
         /// row : ligne de la case
         /// col : colonne de la case
+        /// grid : grille de jeu
         function getCaseValue(row, col, grid) {
             // Si la ligne ou la colonne est en dehors de la grille, retourne 0
             if (row < 0 || row >= gridHeight || col < 0 || col >= gridWidth) {
@@ -191,6 +208,7 @@ class TetrisGame {
                     }
                     break;
                 default:
+                    console.log("Direction inconnue");
                     break;
             }
         });
@@ -250,6 +268,9 @@ class TetrisGame {
                         this.grid[point.row][point.col] = this.currentPiece.id
                     })
 
+                    break;
+                default:
+                    console.log("Direction non reconnue");
                     break;
             }
 
