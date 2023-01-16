@@ -123,6 +123,7 @@ class TetrisPiece {
                 }
             }
         }
+        
         console.log(points)
     }
     
