@@ -34,6 +34,11 @@ class TetrisController {
         rows = this._model.gridRows;
         grid = this._model.grid;
         views = this._view;
+        
+        
+        this.bindrefreshBoard = this.bindrefreshBoard.bind(this);
+        this.model.bindrefreshBoard(this.bindrefreshBoard);
+
 
         // Intancie le contrôle afin de commencer la partie
         document.querySelector('#start').addEventListener('click', () => {
@@ -55,6 +60,11 @@ class TetrisController {
             }
         });
     }
+    
+    bindrefreshBoard (grid) {
+        this.view.bindrefreshBoard(grid);
+    }
+    
 
     // Getters
     get model() {

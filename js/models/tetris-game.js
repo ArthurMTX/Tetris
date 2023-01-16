@@ -70,7 +70,7 @@ class TetrisGame {
         }
 
         // Rafraichit la grille
-        TetrisController.refresh(this.grid)
+        this.refreshBoard(this.grid)
 
         return newPiece;
     }
@@ -275,7 +275,7 @@ class TetrisGame {
             }
 
             // Actualiser l'affichage de la grille
-            TetrisController.refresh(this.grid)
+            this.refreshBoard(this.grid)
             return 1;
 
         } else {
@@ -286,8 +286,10 @@ class TetrisGame {
             })
 
             return 0;
-
         }
+    }
+    bindrefreshBoard(callback){
+        this.refreshBoard(callback);
     }
 }
 
