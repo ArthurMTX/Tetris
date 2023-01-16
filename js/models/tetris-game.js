@@ -288,8 +288,8 @@ class TetrisGame {
             return 0;
         }
     }
-    bindrefreshBoard(callback){
-        this.refreshBoard(callback);
+    bindRefreshBoard(callback){
+        this.refreshBoard = callback;
     }
 }
 

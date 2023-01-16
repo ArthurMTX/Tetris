@@ -7,7 +7,6 @@ export let blockSize;
 export let cols;
 export let rows;
 export let grid;
-export let views;
 export let nextPiece;
 
 /// Classe qui gère le contrôleur du jeu
@@ -33,11 +32,12 @@ class TetrisController {
         cols = this._model.gridCols;
         rows = this._model.gridRows;
         grid = this._model.grid;
-        views = this._view;
         
-        
-        this.bindrefreshBoard = this.bindrefreshBoard.bind(this);
-        this.model.bindrefreshBoard(this.bindrefreshBoard);
+        this.bindRefreshBoard = this.bindRefreshBoard.bind(this);
+        this.model.bindRefreshBoard(this.bindRefreshBoard);
+
+        this.bindGetNextPiece = this.bindGetNextPiece.bind(this);
+        this.view.bindGetNextPiece(this.bindGetNextPiece);
 
 
         // Intancie le contrôle afin de commencer la partie
@@ -61,10 +61,13 @@ class TetrisController {
         });
     }
     
-    bindrefreshBoard (grid) {
-        this.view.bindrefreshBoard(grid);
+    bindRefreshBoard (grid) {
+        this._view.refreshBoard(grid);
     }
-    
+
+    bindGetNextPiece (nextPiece) {
+        this._view.getNextPiece(nextPiece);
+    }
 
     // Getters
     get model() {
@@ -124,10 +127,6 @@ class TetrisController {
                 this.model.nextPiece = this.model.createRandomPiece('ignore');
             }
         }, 1000);
-    }
-
-    static refresh(grid) {
-        views.refreshBoard(grid);
     }
 
     /// Méthode qui affiche un compte à rebours avant de lancer la partie
