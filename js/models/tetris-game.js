@@ -1,4 +1,4 @@
-import TetrisController, {blockSize, grid, pieces} from "../controllers/tetris-controllers.js";
+import TetrisController, {blockSize, pieces} from "../controllers/tetris-controllers.js";
 import TetrisPiece from "./tetris-piece.js";
 
 /// Classe qui gère le démarrage du jeu
@@ -78,10 +78,8 @@ class TetrisGame {
         // Clear tableau des pièces
         pieces.length = 0;
 
-        console.log(1);
         // Crée une nouvelle pièce 
         this.currentPiece = this.createRandomPiece();
-        console.log(2)
 
         // Réinitialise le score 
         this.score = 0;
@@ -143,7 +141,7 @@ class TetrisGame {
         /// Paramétres :
         /// row : ligne de la case
         /// col : colonne de la case
-        function getCaseValue(row, col) {
+        function getCaseValue(row, col, grid) {
             // Si la ligne ou la colonne est en dehors de la grille, retourne 0
             if (row < 0 || row >= gridHeight || col < 0 || col >= gridWidth) {
                 return 0;
@@ -162,7 +160,7 @@ class TetrisGame {
                         impossibleMouvement = true;
                         break;
                     }
-                    if (getCaseValue(point.row, point.col - 1) !== 0) {
+                    if (getCaseValue(point.row, point.col - 1, this.grid) !== 0) {
                         console.log("Impossible de bouger vers la gauche, il y a une pièce à gauche");
                         impossibleMouvement = true;
                         break;
@@ -174,7 +172,7 @@ class TetrisGame {
                         impossibleMouvement = true;
                         break;
                     }
-                    if (getCaseValue(point.row, point.col + 1) !== 0) {
+                    if (getCaseValue(point.row, point.col + 1, this.grid) !== 0) {
                         console.log("Impossible de bouger vers la droite, il y a une pièce à droite");
                         impossibleMouvement = true;
                         break;
@@ -186,7 +184,7 @@ class TetrisGame {
                         impossibleMouvement = true;
                         break;
                     }
-                    if (getCaseValue(point.row + 1, point.col) !== 0) {
+                    if (getCaseValue(point.row + 1, point.col, this.grid) !== 0) {
                         impossibleMouvement = true;
                         console.log("Impossible de bouger vers le bas, il y a une pièce en dessous");
                         break;
