@@ -66,10 +66,12 @@ class TetrisGame {
             newPiece.blocks.forEach(block => {
                 this.grid[block.row][block.col] = newPiece.id;
             });
+            // Rafraichit la grille
+            this.refreshBoard(this.grid,'partial');
+        } else {
+            // Rafraichit la grille
+            this.refreshBoard(this.grid, 'full');
         }
-
-        // Rafraichit la grille
-        this.refreshBoard(this.grid)
 
         return newPiece;
     }
@@ -88,8 +90,6 @@ class TetrisGame {
         // Crée une nouvelle pièce
         this.currentPiece = this.createRandomPiece();
         this.nextPiece = this.createRandomPiece('ignore');
-
-        console.log(this.nextPiece)
 
         // Réinitialise le score 
         this.score = 0;
@@ -116,8 +116,6 @@ class TetrisGame {
 
         // Récupère la dernière pièce du tableau
         this.currentPiece = pieces[pieces.length - 1];
-
-        console.log(this.currentPiece)
 
         // Tableau qui contient les points de la pièce
         let points = []
@@ -274,7 +272,7 @@ class TetrisGame {
             }
 
             // Actualiser l'affichage de la grille
-            this.refreshBoard(this.grid)
+            this.refreshBoard(this.grid, this.nextPiece)
             return 1;
 
         } else {
@@ -289,6 +287,22 @@ class TetrisGame {
     }
     bindRefreshBoard(callback){
         this.refreshBoard = callback;
+    }
+
+    play() {
+        if (this.movePiece('down') === 0) {
+            // Si la pièce ne peut pas descendre, on en crée une nouvelle
+            this.currentPiece = this.nextPiece;
+            this.currentPiece.id = pieces.length;
+
+            this.currentPiece.blocks.forEach(block => {
+                this.grid[block.row][block.col] = this.currentPiece.id;
+            });
+
+            this.nextPiece = this.createRandomPiece('ignore');
+
+            console.log(this.nextPiece)
+        }
     }
 }
 
