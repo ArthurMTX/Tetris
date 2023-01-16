@@ -10,7 +10,6 @@ class TetrisGame {
     constructor(rows, cols) {
         this.gridRows = rows;
         this.gridCols = cols;
-        this.grid = this.createEmptyGrid();
     }
 
     /// Fonction qui crée une grille vide

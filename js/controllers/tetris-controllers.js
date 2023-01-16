@@ -24,14 +24,17 @@ class TetrisController {
 
         // Intancie les objets visuels et logiques du jeu
         this._model = new TetrisGame(20, 10);
-        this._view = new TetrisView(model, canvas);
+
+        this.grid = this._model.grid;
+        grid = this.grid;
+        this._view = new TetrisView(grid);
+
         this._piece = new TetrisPiece();
 
         pieces = this._piece.pieces;
         blockSize = this._view.blockSize;
         cols = this._model.gridCols;
         rows = this._model.gridRows;
-        grid = this._model.grid;
         
         this.bindRefreshBoard = this.bindRefreshBoard.bind(this);
         this._model.bindRefreshBoard(this.bindRefreshBoard);
@@ -70,7 +73,7 @@ class TetrisController {
     ///
     /// Paramétres :
     /// aucun
-    bindEvents() {
+    bindEvents(grid) {
         // Définit les touches de contrôle
         const keyBindings = {
             ArrowRight: 'right',
@@ -108,11 +111,11 @@ class TetrisController {
                 this.model.currentPiece.id = pieces.length;
 
                 this.model.currentPiece.blocks.forEach(block => {
-                    console.log(grid);
-                    grid[block.row][block.col] = this.model.currentPiece.id;
+                    this.model.grid[block.row][block.col] = this.model.currentPiece.id;
                 });
 
                 this.model.nextPiece = this.model.createRandomPiece('ignore');
+                console.log(this.model.nextPiece)
             }
         }, 1000);
     }
@@ -133,7 +136,7 @@ class TetrisController {
         if (seconds < 0) {
             wrap.classList.add('hidden');
             this.model.startNewGame();
-            this.bindEvents(this.model);
+            this.bindEvents();
         } else {
             wrap.classList.add('wrap-' + seconds);
             setTimeout(() => {

@@ -6,7 +6,9 @@ import {pieces} from "../controllers/tetris-controllers.js";
 /// game : instance de la classe TetrisGame
 /// element : élément HTML qui contient le canvas
 class TetrisView {
-    constructor() {
+    constructor(grid) {
+        this.grid = grid;
+
         this.canvas = document.querySelector('#tetris');
         this.ctx = this.canvas.getContext('2d');
         this.blockSize = 40;
