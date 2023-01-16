@@ -75,9 +75,10 @@ class TetrisController {
             ArrowLeft: 'left',
             q: 'left',
             ArrowDown: 'down',
-            ' ': 'down',
+            ' ': 'drop',
             z: 'rotate',
-            ArrowUp: 'rotate'
+            ArrowUp: 'rotate',
+            s: 'down',
         };
 
         // Écoute les événements clavier
@@ -87,18 +88,23 @@ class TetrisController {
         // Vérifie que la touche est valide
         if (!action) return;
 
+        let currentPiece = pieces[pieces.length-1];
+
         // Vérifie si la touche est une rotation ou un déplacement
-        if (action === 'rotate') {
-            // Tourne la pièce
-            let currentPiece = pieces[pieces.length-1];
-
-            console.log(currentPiece);
-
-            this._piece.rotateClockwise(currentPiece.id, this.model.grid);
-        } else {
-            // Déplace la pièce
-            this.model.movePiece(action);
-        }
+            switch (action) {
+                case 'rotate':
+                    // Tourne la pièce
+                    this._piece.rotateClockwise(currentPiece.id, this.model.grid);
+                    break;
+                case 'drop':
+                    // Fait tomber la pièce
+                    this._piece.dropDown(currentPiece.id, this.model.grid);
+                    break;
+                default:
+                    // Déplace la pièce
+                    this.model.movePiece(action);
+                    break;
+            }
         });
 
         // Chaque seconde, on déplace la pièce vers le bas

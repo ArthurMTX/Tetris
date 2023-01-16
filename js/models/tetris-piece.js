@@ -100,34 +100,6 @@ class TetrisPiece {
         }
     }
 
-    rotateClockwise(id,grid) {
-        let currentPiece = this.pieces[--id];
-        let points = []
-        let newPoints = []
-        let impossibleMouvement = false;
-        let gridHeight = grid.length;
-        let gridWidth = grid[0].length;
-        for (let row = 0; row < gridHeight; row++) {
-            // Pour chaque colonne
-            for (let col = 0; col < gridWidth; col++) {
-                // Si l'identifiant de la pièce est égal à l'identifiant de la pièce actuelle
-                if (grid[row][col] === currentPiece.id) {
-                    // Ajoute le point à la liste des points
-                    points.push({
-                        row: row,
-                        col: col
-                    })
-                    console.log(points)
-                    // Supprime l'identifiant de la pièce de la grille
-                    grid[row][col] = 0
-                }
-            }
-        }
-        
-        console.log(points)
-    }
-    
-
     /// Méthode qui retourne les coordonnées de la pièce
     ///
     /// Paramétres :
@@ -229,6 +201,71 @@ class TetrisPiece {
 
     bindRefreshBoard(callback){
         this.refreshBoard = callback;
+    }
+
+    dropDown(id, grid) {
+        // Récupère la pièce
+        let currentPiece = this.pieces[id];
+
+        let points = [];
+        let newPoints = [];
+        let impossibleMouvement = false;
+        let gridHeight = grid.length;
+        let gridWidth = grid[0].length;
+
+        // Pour chaque case de la grille
+        for (let row = 0; row < gridHeight; row++) {
+            // Pour chaque colonne
+            for (let col = 0; col < gridWidth; col++) {
+                // Si l'identifiant de la pièce est égal à l'identifiant de la pièce actuelle
+                if (grid[row][col] === id) {
+                    // Ajoute les coordonnées de la case à la liste des points de la pièce
+                    points.push({
+                        row: row,
+                        col: col
+                    });
+                }
+            }
+        }
+
+        // Pour chaque point de la pièce, faire descendre la pièce
+        points.forEach(point => {
+            // Supprime 1 aux coordonnées de tous les points de la pièce
+            newPoints.push({
+                row: point.row + 1,
+                col: point.col
+            });
+        });
+
+        // Si les nouvelles coordonnées sont en dehors de la grille
+        if (newPoints.some(point => point.row >= gridHeight)) {
+            // Impossible de faire descendre la pièce
+            console.log("Impossible de faire descendre la pièce, les nouvelles coordonnées sont en dehors de la grille");
+            impossibleMouvement = true;
+        }
+
+        // Si les nouvelles coordonnées sont déjà occupées par une autre pièce
+        if (newPoints.some(point => grid[point.row][point.col] !== 0 && grid[point.row][point.col] !== id)) {
+            // Impossible de faire descendre la pièce
+            console.log("Impossible de faire descendre la pièce, les nouvelles coordonnées sont déjà occupées par une autre pièce");
+            impossibleMouvement = true;
+        }
+
+        // Si le mouvement est possible
+        if (!impossibleMouvement) {
+            // Pour chaque point de la pièce
+            for (let i = 0; i < points.length; i++) {
+                // Vide la case de la grille
+                grid[points[i].row][points[i].col] = 0;
+            }
+            // Pour chaque nouvelle coordonnée de la pièce
+            for (let i = 0; i < newPoints.length; i++) {
+                // Remplit la case de la grille
+                grid[newPoints[i].row][newPoints[i].col] = id;
+            }
+        }
+
+        this.refreshBoard(grid,'full');
     }
 }
 
