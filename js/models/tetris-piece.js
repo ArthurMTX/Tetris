@@ -126,11 +126,63 @@ class TetrisPiece {
     /// id : identifiant de la pièce
     static rotateClockwise(id) {
         let currentPiece = pieces[--id];
+        let points = []
+        let newPoints = []
+        let impossibleMouvement = false;
+        let gridHeight = grid.length;
+        let gridWidth = grid[0].length;
+
+        for (let row = 0; row < gridHeight; row++) {
+            // Pour chaque colonne
+            for (let col = 0; col < gridWidth; col++) {
+                // Si l'identifiant de la pièce est égal à l'identifiant de la pièce actuelle
+                if (grid[row][col] === currentPiece.id) {
+                    // Ajoute le point à la liste des points
+                    points.push({
+                        row: row,
+                        col: col
+                    })
+                    // Supprime l'identifiant de la pièce de la grille
+                    grid[row][col] = 0
+                }
+            }
+        }
+
+        function getCaseValue(row, col) {
+            // Si la ligne ou la colonne est en dehors de la grille, retourne 0
+            if (row < 0 || row >= gridHeight || col < 0 || col >= gridWidth) {
+                return 0;
+            }
+        }
+
+
+        points.forEach(point => {
+            if (point.col < grid[0].length - 1) {
+                newPoints.push({
+                    row: (currentPiece.pattern.length - 1 - point.col),
+                    col: point.row
+                })
+            }
+        }) 
+        console.log(points)
+        console.log(newPoints);
+        console.log(currentPiece.pattern)
+        // Rotation du patern de la pièce à 90°
+        let length = currentPiece.pattern.length
+        for(let rows = 0; rows < length; rows+=1){
+                let = matrix[rows] = []
+            for (let cols = 0; cols < length; cols+=1){
+                    matrix[rows][col] = currentPiece.pattern[length - 1 - cols][rows];
+            }
+        }
+        console.log(currentPiece.pattern);
+        /*
         let newRotation = (currentPiece.currentRotation + 1) % currentPiece.pattern.length;
+        console.log(newRotation);
         let newPattern = currentPiece.getPattern(currentPiece.shape, newRotation);
         let newCols = newPattern[0].length;
         let newRows = newPattern.length;
-
+        console.log(newCols,newRows);
         // Si la pièce est dans la grid
         if (currentPiece.col + newCols <= grid.cols && currentPiece.row + newRows <= grid.rows) {
             currentPiece.pattern = newPattern;
@@ -138,8 +190,10 @@ class TetrisPiece {
             currentPiece.cols = newCols;
             currentPiece.rows = newRows;
         }
-
+        */
+        // Pour chaque bloc de la pièce, ajoute l'id de la pièce à la grill
         refreshBoard(grid);
+    
     }
 
     /// Méthode qui déplace la pièce dans un sens anti-horaire

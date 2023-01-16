@@ -138,14 +138,13 @@ export function movePiece(direction) {
                 points.push({
                     row: row,
                     col: col
-                })
-                
+                })  
                 // Supprime l'identifiant de la pièce de la grille
                 grid[row][col] = 0
             }
+            
         }
     }
-    
     /// Fonction qui récupère la valeur d'une case
     ///
     /// Paramétres :
