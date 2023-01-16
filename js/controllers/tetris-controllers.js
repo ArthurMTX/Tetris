@@ -83,7 +83,7 @@ class TetrisController {
             ArrowDown: 'down',
             ' ': 'down',
             z: 'rotate',
-            s: 'rotate'
+            ArrowUp: 'rotate'
         };
 
         // Écoute les événements clavier
@@ -96,7 +96,9 @@ class TetrisController {
         // Vérifie si la touche est une rotation ou un déplacement
         if (action === 'rotate') {
             // Tourne la pièce
-            //////TetrisPiece.rotateClockwise(currentPiece.id);
+            let currentPiece = pieces[pieces.length-1];
+            console.log(this.model.grid)
+            this._piece.rotateClockwise(currentPiece.id,this.model.grid);
         } else {
             // Déplace la pièce
             this.model.movePiece(action);

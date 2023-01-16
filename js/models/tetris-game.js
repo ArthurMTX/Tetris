@@ -67,7 +67,6 @@ class TetrisGame {
                 this.grid[block.row][block.col] = newPiece.id;
             });
         }
-
         // Rafraichit la grille
         this.refreshBoard(this.grid)
 
@@ -89,7 +88,6 @@ class TetrisGame {
         this.currentPiece = this.createRandomPiece();
         this.nextPiece = this.createRandomPiece('ignore');
 
-        console.log(this.nextPiece)
 
         // Réinitialise le score 
         this.score = 0;
@@ -117,8 +115,6 @@ class TetrisGame {
         // Récupère la dernière pièce du tableau
         this.currentPiece = pieces[pieces.length - 1];
 
-        console.log(this.currentPiece)
-
         // Tableau qui contient les points de la pièce
         let points = []
 
@@ -134,6 +130,7 @@ class TetrisGame {
 
         // Parcourt la grille pour récupérer les points de la pièce actuelle
         // Pour chaque ligne
+        
         for (let row = 0; row < gridHeight; row++) {
             // Pour chaque colonne
             for (let col = 0; col < gridWidth; col++) {
@@ -142,14 +139,17 @@ class TetrisGame {
                     // Ajoute le point à la liste des points
                     points.push({
                         row: row,
-                        col: col
+                        col: col,  
                     })
-
+                    
                     // Supprime l'identifiant de la pièce de la grille
                     this.grid[row][col] = 0
+
                 }
             }
         }
+
+        
 
         /// Fonction qui récupère la valeur d'une case
         ///
