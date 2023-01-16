@@ -34,11 +34,7 @@ class TetrisController {
         grid = this._model.grid;
         
         this.bindRefreshBoard = this.bindRefreshBoard.bind(this);
-        this.model.bindRefreshBoard(this.bindRefreshBoard);
-
-        this.bindGetNextPiece = this.bindGetNextPiece.bind(this);
-        this.view.bindGetNextPiece(this.bindGetNextPiece);
-
+        this._model.bindRefreshBoard(this.bindRefreshBoard);
 
         // Intancie le contrôle afin de commencer la partie
         document.querySelector('#start').addEventListener('click', () => {
@@ -65,17 +61,9 @@ class TetrisController {
         this._view.refreshBoard(grid);
     }
 
-    bindGetNextPiece (nextPiece) {
-        this._view.getNextPiece(nextPiece);
-    }
-
     // Getters
     get model() {
         return this._model;
-    }
-
-    get view() {
-        return this._view;
     }
 
     /// Fonction qui gère les événements clavier
@@ -135,7 +123,7 @@ class TetrisController {
     /// seconds : nombre de secondes du compte à rebours
     countdown_chrono(seconds) {
         // Efface le canvas
-        this.view.ctx.clearRect(0, 0, this.view.canvas.width, this.view.canvas.height);
+        this._view.ctx.clearRect(0, 0, this._view.canvas.width, this._view.canvas.height);
 
         // Récupère l'élement countdown
         let wrap = document.getElementById('countdown');
@@ -193,10 +181,6 @@ class TetrisController {
 
         // Affiche le compte à rebours
         this.countdown_chrono(3);
-    }
-
-    static getNextPiece() {
-        return pieces[Math.floor(Math.random() * pieces.length)];
     }
 }
 

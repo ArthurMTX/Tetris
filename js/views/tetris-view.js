@@ -84,7 +84,7 @@ class TetrisView {
     /// grid : grille de jeu
     refreshBoard(grid) {
         // Obtiens la pièce suivante
-        let nextPiece = this.getNextPiece();
+        //let nextPiece = this.getNextPiece();
 
          // Pour chaque valeur de grid, dessine un bloc de la couleur correspondante via l'id de la pièce
         for (let row = 0; row < grid.length; row++) {
@@ -112,10 +112,6 @@ class TetrisView {
         const gridHeight = grid.length;
         this.drawGrid(gridWidth, gridHeight);
         //this.drawNextPieceGrid(4, 4, nextPiece);
-    }
-
-    bindGetNextPiece(callback){
-        this.getNextPiece = callback;
     }
 }
 

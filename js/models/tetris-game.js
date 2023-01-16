@@ -43,7 +43,7 @@ class TetrisGame {
     /// Aucun
     createRandomPiece(mode) {
         // Crée un nouvel identifiant pour la pièce
-        let id = null;
+        let id;
 
         if (mode === 'ignore') {
             id = -1;
