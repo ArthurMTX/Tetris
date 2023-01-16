@@ -6,9 +6,7 @@ import {pieces} from "../controllers/tetris-controllers.js";
 /// game : instance de la classe TetrisGame
 /// element : élément HTML qui contient le canvas
 class TetrisView {
-    constructor(grid) {
-        this.grid = grid;
-
+    constructor() {
         this.canvas = document.querySelector('#tetris');
         this.ctx = this.canvas.getContext('2d');
         this.blockSize = 40;
@@ -25,19 +23,24 @@ class TetrisView {
     drawNextPieceGrid(gridWidth, gridHeight) {
         let nextPiece = pieces.find(piece => piece.id === -1);
 
+        // Réinitialisation du canvas
         this.nextPieceCtx.clearRect(0, 0, this.nextPieceCanvas.width, this.nextPieceCanvas.height);
+
+        // Dimensions du canvas
+        this.nextPieceCanvas.width = gridWidth * this.blockSize;
+        this.nextPieceCanvas.height = gridHeight * this.blockSize;
+
+        // Bordure du canvas
         this.nextPieceCtx.strokeStyle = 'black';
-        this.nextPieceCtx.lineWidth = 1;
+        this.nextPieceCtx.lineWidth = 2;
         this.nextPieceCtx.strokeRect(0, 0, gridWidth * this.blockSize, gridHeight * this.blockSize);
 
-        for (let i = 0; i < nextPiece.shape.length; i++) {
-            for (let j = 0; j < nextPiece.shape[i].length; j++) {
-                if (nextPiece.shape[i][j] !== 0) {
-                    this.nextPieceCtx.fillStyle = nextPiece.color;
+        this.nextPieceCtx.fillStyle = nextPiece.color;
+
+        for (let i = 0; i < nextPiece.pattern.length; i++) {
+            for (let j = 0; j < nextPiece.pattern[i].length; j++) {
+                if (nextPiece.pattern[i][j] !== 0) {
                     this.nextPieceCtx.fillRect(j * this.blockSize, i * this.blockSize, this.blockSize, this.blockSize);
-                    this.nextPieceCtx.strokeStyle = 'black';
-                    this.nextPieceCtx.lineWidth = 1;
-                    this.nextPieceCtx.strokeRect(j * this.blockSize, i * this.blockSize, this.blockSize, this.blockSize);
                 }
             }
         }
@@ -50,9 +53,12 @@ class TetrisView {
     /// gridHeight : hauteur de la grille
     drawGrid(gridWidth, gridHeight){
         // Définit les propriétés du contexte (couleur, épaisseur, etc.)
-        this.ctx.strokeStyle = '#fff';
+        this.ctx.strokeStyle = '#0f0';
+        this.ctx.shadowBlur = 10;
         this.ctx.lineWidth = 0.5;
         this.ctx.background = '#000';
+        this.ctx.shadowOffsetX = 0;
+        this.ctx.shadowOffsetY = 0;
 
         // Remplit le canvas avec la couleur de fond
         this.ctx.fillStyle = this.ctx.background;
@@ -73,6 +79,8 @@ class TetrisView {
             this.ctx.stroke();
         }
 
+        /*
+        // ############################################################## DEBUG ONLY ##############################################################
         // Affiche les coordonnées de chaque cellule
         for (let y = 0; y < gridHeight; y++) {
             for (let x = 0; x < gridWidth; x++) {
@@ -82,6 +90,8 @@ class TetrisView {
                 this.ctx.fillText(y + ',' + x, x * this.blockSize + this.blockSize / 2, y * this.blockSize + this.blockSize / 2);
             }
         }
+        // ############################################################## DEBUG ONLY ##############################################################
+        */
     }
 
     /// Fonction qui actualise la grille de jeu

@@ -27,7 +27,7 @@ class TetrisPiece {
         this.rows = this.pattern.length;
 
         // Coordonnées de la pièce 
-        this.coords = { row: row, col : col}
+        this.coords = { row: row, col : col};
 
         // Pour chaque case de la pièce
         for (let i = 0; i < this.rows; i++) {
@@ -121,9 +121,9 @@ class TetrisPiece {
     }
 
     rotateClockwise(id,grid) {
-        let currentPiece = this.pieces[--id];
-        let points = []
-        let newPoints = []
+        let currentPiece = this.pieces[id];
+        let points = [];
+        let newPoints = [];
         let impossibleMouvement = false;
         let gridHeight = grid.length;
         let gridWidth = grid[0].length;
@@ -131,19 +131,76 @@ class TetrisPiece {
             // Pour chaque colonne
             for (let col = 0; col < gridWidth; col++) {
                 // Si l'identifiant de la pièce est égal à l'identifiant de la pièce actuelle
-                if (grid[row][col] === currentPiece.id) {
-                    // Ajoute le point à la liste des points
+                if (grid[row][col] === id) {
+                    // Ajoute les coordonnées de la case à la liste des points de la pièce
                     points.push({
                         row: row,
                         col: col
-                    })
-                    console.log(points)
-                    // Supprime l'identifiant de la pièce de la grille
-                    grid[row][col] = 0
+                    });
                 }
             }
         }
-        console.log(points)
+
+        // Prends le premier point de la pièce
+        let firstPoint = points[0];
+
+        // Pour chaque point de la pièce
+        for (let i = 0; i < points.length; i++) {
+            // Calcule les coordonnées du point en fonction de la rotation
+            let newPoint = {
+                row: firstPoint.row + (points[i].col - firstPoint.col),
+                col: firstPoint.col - (points[i].row - firstPoint.row)
+            };
+
+            // Si le nouveau point est plus haute que la position de la pièce
+            if (newPoint.row < currentPiece.row) {
+                // Décale la pièce vers le bas
+                currentPiece.row -= newPoint.row - currentPiece.row + 1;
+            }
+
+            // Si le point est en dehors de la grille
+            if (newPoint.row < 0 || newPoint.row >= gridHeight || newPoint.col < 0 || newPoint.col >= gridWidth) {
+                // Impossible de tourner la pièce
+                console.log("Impossible de tourner la pièce, le point est en dehors de la grille");
+                impossibleMouvement = true;
+            }
+            // Si le point est déjà occupé par une autre pièce
+            else if (grid[newPoint.row][newPoint.col] !== 0 && grid[newPoint.row][newPoint.col] !== id) {
+                // Impossible de tourner la pièce
+                console.log("Impossible de tourner la pièce, le point est déjà occupé par une autre pièce");
+                impossibleMouvement = true;
+            }
+
+            // Ajoute le point à la liste des nouveaux points
+            newPoints.push(newPoint);
+        }
+
+        // Si le mouvement est possible
+        if (!impossibleMouvement) {
+            // Pour chaque point de la pièce
+            for (let i = 0; i < points.length; i++) {
+                // Vide la case de la grille
+                grid[points[i].row][points[i].col] = 0;
+            }
+            // Pour chaque nouvelle coordonnée de la pièce
+            for (let i = 0; i < newPoints.length; i++) {
+                // Remplit la case de la grille
+                grid[newPoints[i].row][newPoints[i].col] = id;
+            }
+            // Incrémente la rotation de la pièce
+            currentPiece.currentRotation++;
+            // Si la rotation de la pièce est égale à 4
+            if (currentPiece.currentRotation === 4) {
+                // Réinitialise la rotation de la pièce
+                currentPiece.currentRotation = 0;
+            }
+        }
+
+        this.refreshBoard(grid,'full');
+    }
+
+    bindRefreshBoard(callback){
+        this.refreshBoard = callback;
     }
 }
 

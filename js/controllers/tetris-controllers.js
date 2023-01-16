@@ -6,7 +6,6 @@ export let pieces;
 export let blockSize;
 export let cols;
 export let rows;
-export let grid;
 
 /// Classe qui gère le contrôleur du jeu
 ///
@@ -15,19 +14,12 @@ export let grid;
 /// view : instance de la classe TetrisView
 class TetrisController {
     constructor(view, model) {
-       // Élement principal pour le jeu
-        const canvas = document.getElementById('tetris');
-
         // Booléen pour savoir si le jeu est commencé ou non
         this._gameStarted = false;
 
         // Intancie les objets visuels et logiques du jeu
         this._model = new TetrisGame(20, 10);
-
-        this.grid = this._model.grid;
-        grid = this.grid;
-        this._view = new TetrisView(grid);
-
+        this._view = new TetrisView();
         this._piece = new TetrisPiece();
 
         pieces = this._piece.pieces;
@@ -37,6 +29,9 @@ class TetrisController {
 
         this.bindRefreshBoard = this.bindRefreshBoard.bind(this);
         this._model.bindRefreshBoard(this.bindRefreshBoard);
+
+        this.bindRefreshBoard = this.bindRefreshBoard.bind(this);
+        this._piece.bindRefreshBoard(this.bindRefreshBoard);
 
         // Intancie le contrôle afin de commencer la partie
         document.querySelector('#start').addEventListener('click', () => {
@@ -96,8 +91,10 @@ class TetrisController {
         if (action === 'rotate') {
             // Tourne la pièce
             let currentPiece = pieces[pieces.length-1];
-            console.log(this.model.grid)
-            this._piece.rotateClockwise(currentPiece.id,this.model.grid);
+
+            console.log(currentPiece);
+
+            this._piece.rotateClockwise(currentPiece.id, this.model.grid);
         } else {
             // Déplace la pièce
             this.model.movePiece(action);
@@ -120,11 +117,13 @@ class TetrisController {
 
         // Récupère l'élement countdown
         let wrap = document.getElementById('countdown');
+        let nextPieceCanvas = document.getElementById('next');
 
         // Si le compte à rebours n'est pas terminé, affiche le nombre de secondes restantes
         // Sinon, cacher la div et lancer la partie
         if (seconds < 0) {
             wrap.classList.add('hidden');
+            nextPieceCanvas.classList.remove('hidden');
             this.model.startNewGame();
             this.bindEvents();
         } else {

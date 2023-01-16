@@ -47,7 +47,7 @@ class TetrisGame {
         if (mode === 'ignore') {
             id = -1;
         } else {
-            id = (pieces.length + 1)
+            id = (pieces.length + 1);
         }
 
         // Type de pièce aléatoire
@@ -58,8 +58,8 @@ class TetrisGame {
         const color = 'cyan,blue,orange,purple,green,yellow,red'.split(',')[index];
 
         // Crée une nouvelle pièce Tetris et l'ajoute au tableau des pièces
-        let newPiece = new TetrisPiece(id, type, color, parseInt(this.gridCols / 3), -1, 0)
-        pieces.push(newPiece)
+        let newPiece = new TetrisPiece(id, type, color, parseInt(this.gridCols / 3), -1, 0);
+        pieces.push(newPiece);
 
         if (mode !== 'ignore') {
             // Pour chaque bloc de la pièce, ajoute l'id de la pièce à la grille
@@ -94,11 +94,6 @@ class TetrisGame {
         // Réinitialise le score 
         this.score = 0;
         this.gameOver = false;
-    }
-
-    // Méthode qui met à jour l'état du jeu
-    update() {
-        // ...
     }
 
     // Méthode qui gère la fin de la partie
@@ -210,7 +205,6 @@ class TetrisGame {
             }
         });
 
-
         // Si le mouvement n'est pas impossible
         if (!impossibleMouvement){
 
@@ -285,6 +279,7 @@ class TetrisGame {
             return 0;
         }
     }
+    
     bindRefreshBoard(callback){
         this.refreshBoard = callback;
     }
