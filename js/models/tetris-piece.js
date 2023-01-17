@@ -228,6 +228,15 @@ class TetrisPiece {
             }
         }
 
+        // Pour chaque point de la pièce, faire descendre la pièce
+        points.forEach(point => {
+            // Supprime 1 aux coordonnées de tous les points de la pièce
+            newPoints.push({
+                row: point.row + 1,
+                col: point.col
+            });
+        });
+
         // Si les nouvelles coordonnées sont en dehors de la grille
         if (newPoints.some(point => point.row >= gridHeight)) {
             // Impossible de faire descendre la pièce
