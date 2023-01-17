@@ -1,4 +1,4 @@
-import {pieces} from "../controllers/tetris-controllers.js";
+import {pieces, rows} from "../controllers/tetris-controllers.js";
 
 /// Classe qui gère l'affichage du jeu
 ///
@@ -35,12 +35,20 @@ class TetrisView {
         this.nextPieceCtx.lineWidth = 2;
         this.nextPieceCtx.strokeRect(0, 0, gridWidth * this.blockSize, gridHeight * this.blockSize);
 
-        this.nextPieceCtx.fillStyle = nextPiece.color;
+        // Applique la texture de la pièce
+        const blockTexture = new Image();
+        blockTexture.src = './Assets/img/block.jpg';
 
         for (let i = 0; i < nextPiece.pattern.length; i++) {
             for (let j = 0; j < nextPiece.pattern[i].length; j++) {
                 if (nextPiece.pattern[i][j] !== 0) {
+                    this.nextPieceCtx.drawImage(blockTexture, j * this.blockSize, i * this.blockSize, this.blockSize, this.blockSize);
+
+                    // Applique un overlay de couleur sur le bloc
+                    this.nextPieceCtx.globalAlpha = 0.7;
+                    this.nextPieceCtx.fillStyle = nextPiece.color;
                     this.nextPieceCtx.fillRect(j * this.blockSize, i * this.blockSize, this.blockSize, this.blockSize);
+                    this.nextPieceCtx.globalAlpha = 1;
                 }
             }
         }
@@ -53,7 +61,7 @@ class TetrisView {
     /// gridHeight : hauteur de la grille
     drawGrid(gridWidth, gridHeight){
         // Définit les propriétés du contexte (couleur, épaisseur, etc.)
-        this.ctx.strokeStyle = '#0f0';
+        this.ctx.strokeStyle = '#fff';
         this.ctx.shadowBlur = 10;
         this.ctx.lineWidth = 0.5;
         this.ctx.background = '#000';
@@ -99,31 +107,57 @@ class TetrisView {
     /// Paramétres :
     /// grid : grille de jeu
     refreshBoard(grid, mode) {
+        // Dessine les traits de la grille
+        const gridWidth = grid[0].length;
+        const gridHeight = grid.length;
+
         // Pour chaque valeur de grid, dessine un bloc de la couleur correspondante via l'id de la pièce
         for (let row = 0; row < grid.length; row++) {
             for (let col = 0; col < grid[row].length; col++) {
                 // Si la valeur est 0, dessine un bloc noir
                 if (grid[row][col] === 0) {
+
                     this.ctx.fillStyle = '#000';
                     this.ctx.fillRect(col * this.blockSize, row * this.blockSize, this.blockSize, this.blockSize);
+
                 } else {
+
                     // Sinon, dessine un bloc de la couleur de la pièce
                     const pieceId = grid[row][col];
 
-                    // Cherche la bonne pièce via l'ID dans le tableau des pièces via le constroller
+                    // Cherche la bonne pièce via l'ID dans le tableau pieces
                     const piece = pieces.find(piece => piece.id === pieceId);
 
-                    // Dessine le bloc de la couleur de la pièce correspondante
+                    // Mets a jour les coordonnées de la pièce
+                    piece.coords = {x: col, y: row};
+
+                    // Mets a jour les blocs de la pièce
+                    piece.blocks = [];
+                    for (let i = 0; i < piece.pattern.length; i++) {
+                        for (let j = 0; j < piece.pattern[i].length; j++) {
+                            if (piece.pattern[i][j] !== 0) {
+                                piece.blocks.push({x: j, y: i});
+                            }
+                        }
+                    }
+                    console.log(piece.blocks);
+
+                    // Applique la texture de la pièce
+                    const blockTexture = new Image();
+                    blockTexture.src = './Assets/img/block.jpg';
+                    this.ctx.drawImage(blockTexture, col * this.blockSize, row * this.blockSize, this.blockSize, this.blockSize);
+
+                    // Applique un overlay de couleur sur le bloc
+                    this.ctx.globalAlpha = 0.7;
                     this.ctx.fillStyle = piece.color;
                     this.ctx.fillRect(col * this.blockSize, row * this.blockSize, this.blockSize, this.blockSize);
+                    this.ctx.globalAlpha = 1;
                 }
             }
         }
 
-        // Dessine les traits de la grille
-        const gridWidth = grid[0].length;
-        const gridHeight = grid.length;
         this.drawGrid(gridWidth, gridHeight);
+
         if (mode === 'full') {
             this.drawNextPieceGrid(4, 4);
         }

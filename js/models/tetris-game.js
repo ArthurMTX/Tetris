@@ -99,7 +99,16 @@ class TetrisGame {
 
     // Méthode qui gère la fin de la partie
     endGame() {
-        // ...
+        let check_col = [];
+        let col = (this.gridCols / 2) - 3
+
+        for ( col ; col < (this.gridCols/2) + 3; col++) {
+            for (let row = 0; row < this.gridRows; row++) {
+                check_col = this.grid[row][col];
+            }
+        }
+        console.log(check_col)
+        // pour chaque lignes si une colone est toujours différents de 0, c'est perdu
     }
 
     /// Fonction qui déplace la pièce
@@ -128,7 +137,7 @@ class TetrisGame {
 
         // Parcourt la grille pour récupérer les points de la pièce actuelle
         // Pour chaque ligne
-        
+
         for (let row = 0; row < gridHeight; row++) {
             // Pour chaque colonne
             for (let col = 0; col < gridWidth; col++) {
@@ -137,17 +146,14 @@ class TetrisGame {
                     // Ajoute le point à la liste des points
                     points.push({
                         row: row,
-                        col: col,  
+                        col: col,
                     })
-                    
+
                     // Supprime l'identifiant de la pièce de la grille
                     this.grid[row][col] = 0
-
                 }
             }
         }
-
-        
 
         /// Fonction qui récupère la valeur d'une case
         ///
@@ -278,13 +284,12 @@ class TetrisGame {
 
             // Réinitialiser le mouvement
             points.forEach(point => {
-                this.grid[point.row][point.col] = this.currentPiece.id
+                this.grid[point.row][point.col] = this.currentPiece.id;
             })
-
             return 0;
         }
     }
-    
+
     bindRefreshBoard(callback){
         this.refreshBoard = callback;
     }
@@ -300,8 +305,6 @@ class TetrisGame {
             });
 
             this.nextPiece = this.createRandomPiece('ignore');
-
-            console.log(this.nextPiece)
         }
     }
 }

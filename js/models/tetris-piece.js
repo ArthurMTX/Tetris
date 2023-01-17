@@ -1,3 +1,4 @@
+import {pieces} from "../controllers/tetris-controllers.js";
 /// Classe qui gère les pièces
 ///
 /// Paramétres :
@@ -7,6 +8,7 @@
 /// col : colonne de la pièce
 /// row : ligne de la pièce
 /// rotation : rotation de la pièce
+
 class TetrisPiece {
     constructor(id, shape, color, col, row, rotation) {
         this.id = id;
@@ -16,6 +18,7 @@ class TetrisPiece {
         this.row = row;
         this.currentRotation = rotation;
 
+        this.darkColor = this.getShade(this.color);
         this.blocks = [];
         this.pieces = [];
 
@@ -97,6 +100,27 @@ class TetrisPiece {
                     [0, 0, 0],
                     [0, 0, 0]
                 ];
+        }
+    }
+
+    getShade(color) {
+        switch (color) {
+            case 'cyan':
+                return '#00A4A4';
+            case 'blue':
+                return '#0000A4';
+            case 'orange':
+                return '#A46B00';
+            case 'purple':
+                return '#520052';
+            case 'green':
+                return '#005200';
+            case 'yellow':
+                return '#929200';
+            case 'red':
+                return '#800000';
+            default:
+                return '#000000';
         }
     }
 
@@ -204,67 +228,76 @@ class TetrisPiece {
     }
 
     dropDown(id, grid) {
-        // Récupère la pièce
-        let currentPiece = this.pieces[id];
+        // Récupère la pièce dans la liste des pièces
+        let currentPiece = pieces.find(piece => piece.id === id);
 
-        let points = [];
-        let newPoints = [];
         let impossibleMouvement = false;
         let gridHeight = grid.length;
         let gridWidth = grid[0].length;
 
-        // Pour chaque case de la grille
-        for (let row = 0; row < gridHeight; row++) {
-            // Pour chaque colonne
-            for (let col = 0; col < gridWidth; col++) {
-                // Si l'identifiant de la pièce est égal à l'identifiant de la pièce actuelle
-                if (grid[row][col] === id) {
-                    // Ajoute les coordonnées de la case à la liste des points de la pièce
-                    points.push({
-                        row: row,
-                        col: col
-                    });
+        // Fait descendre la pièce jusqu'à ce qu'elle touche le sol ou une autre pièce
+        while (!impossibleMouvement) {
+            let points = [];
+            let newPoints = [];
+
+            // Récupère les coordonnées de la pièce via blocks
+            for (let row = 0; row < gridHeight; row++) {
+                // Pour chaque colonne
+                for (let col = 0; col < gridWidth; col++) {
+                    // Si l'identifiant de la pièce est égal à l'identifiant de la pièce actuelle
+                    if (grid[row][col] === id) {
+                        // Ajoute les coordonnées de la case à la liste des points de la pièce
+                        points.push({
+                            row: row,
+                            col: col
+                        });
+                    }
                 }
             }
-        }
 
-        // Pour chaque point de la pièce, faire descendre la pièce
-        points.forEach(point => {
-            // Supprime 1 aux coordonnées de tous les points de la pièce
-            newPoints.push({
-                row: point.row + 1,
-                col: point.col
-            });
-        });
-
-        // Si les nouvelles coordonnées sont en dehors de la grille
-        if (newPoints.some(point => point.row >= gridHeight)) {
-            // Impossible de faire descendre la pièce
-            console.log("Impossible de faire descendre la pièce, les nouvelles coordonnées sont en dehors de la grille");
-            impossibleMouvement = true;
-        }
-
-        // Si les nouvelles coordonnées sont déjà occupées par une autre pièce
-        if (newPoints.some(point => grid[point.row][point.col] !== 0 && grid[point.row][point.col] !== id)) {
-            // Impossible de faire descendre la pièce
-            console.log("Impossible de faire descendre la pièce, les nouvelles coordonnées sont déjà occupées par une autre pièce");
-            impossibleMouvement = true;
-        }
-
-        // Si le mouvement est possible
-        if (!impossibleMouvement) {
             // Pour chaque point de la pièce
             for (let i = 0; i < points.length; i++) {
-                // Vide la case de la grille
-                grid[points[i].row][points[i].col] = 0;
+                // Calcule les coordonnées du point en fonction de la rotation
+                let newPoint = {
+                    row: points[i].row + 1,
+                    col: points[i].col
+                };
+
+                // Si le point est en dehors de la grille
+                if (newPoint.row < 0 || newPoint.row >= gridHeight || newPoint.col < 0 || newPoint.col >= gridWidth) {
+                    // Impossible de faire descendre la pièce
+                    console.log("Impossible de faire descendre la pièce, le point est en dehors de la grille");
+                    impossibleMouvement = true;
+                }
+                // Si le point est déjà occupé par une autre pièce
+                else if (grid[newPoint.row][newPoint.col] !== 0 && grid[newPoint.row][newPoint.col] !== id) {
+                    // Impossible de faire descendre la pièce
+                    console.log("Impossible de faire descendre la pièce, le point est déjà occupé par une autre pièce");
+                    impossibleMouvement = true;
+                }
+
+                // Ajoute le point à la liste des nouveaux points
+                newPoints.push(newPoint);
             }
-            // Pour chaque nouvelle coordonnée de la pièce
-            for (let i = 0; i < newPoints.length; i++) {
-                // Remplit la case de la grille
-                grid[newPoints[i].row][newPoints[i].col] = id;
+
+            if (points.length !== 0 || newPoints.length !== 0) {
+                // Si le mouvement est possible
+                if (!impossibleMouvement) {
+                    // Pour chaque point de la pièce
+                    for (let i = 0; i < points.length; i++) {
+                        // Vide la case de la grille
+                        grid[points[i].row][points[i].col] = 0;
+                    }
+                    // Pour chaque nouvelle coordonnée de la pièce
+                    for (let i = 0; i < newPoints.length; i++) {
+                        // Remplit la case de la grille
+                        grid[newPoints[i].row][newPoints[i].col] = id;
+                    }
+                }
+            } else {
+                impossibleMouvement = true;
             }
         }
-
         this.refreshBoard(grid,'full');
     }
 }

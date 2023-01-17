@@ -27,11 +27,27 @@ class TetrisController {
         cols = this._model.gridCols;
         rows = this._model.gridRows;
 
-        this.bindRefreshBoard = this.bindRefreshBoard.bind(this);
-        this._model.bindRefreshBoard(this.bindRefreshBoard);
+        this.autoMove = null;
+
+        // Définit les touches de contrôle
+        this.keyBindings = {
+            ArrowRight: 'right',
+            d: 'right',
+            ArrowLeft: 'left',
+            q: 'left',
+            ArrowDown: 'down',
+            ' ': 'drop',
+            z: 'rotate',
+            ArrowUp: 'rotate',
+            s: 'down',
+        };
 
         this.bindRefreshBoard = this.bindRefreshBoard.bind(this);
+        this._model.bindRefreshBoard(this.bindRefreshBoard);
         this._piece.bindRefreshBoard(this.bindRefreshBoard);
+
+        //this.bindEndGame = this.bindEndGame.bind(this);
+        //this._view.bindEndGame(this.bindEndGame);
 
         // Intancie le contrôle afin de commencer la partie
         document.querySelector('#start').addEventListener('click', () => {
@@ -52,27 +68,6 @@ class TetrisController {
                 }
             }
         });
-
-        document.querySelector('#restart').addEventListener('click', () => {
-            this._gameStarted = false;
-            // Récupère la hauteur et la largeur de la grille
-            let gridHeight = this._model.grid.length;
-            let gridWidth = this._model.grid[0].length;
-             // Pour chaque ligne
-            for (let row = 0; row < gridHeight; row++) {
-            // Pour chaque colonne
-            for (let col = 0; col < gridWidth; col++) {
-                // Si l'identifiant de la pièce est égal à l'identifiant de la pièce actuelle
-                    // Supprime l'identifiant de la pièce de la grille
-                    this._model.grid[row][col] = 0
-
-                }
-            }
-            if (!this._gameStarted){
-                this._gameStarted = true
-                this.start();
-            }
-        });
     }
     
     bindRefreshBoard (grid, nextPiece) {
@@ -88,50 +83,52 @@ class TetrisController {
     ///
     /// Paramétres :
     /// aucun
-    bindEvents(grid) {
-        // Définit les touches de contrôle
-        const keyBindings = {
-            ArrowRight: 'right',
-            d: 'right',
-            ArrowLeft: 'left',
-            q: 'left',
-            ArrowDown: 'down',
-            ' ': 'drop',
-            z: 'rotate',
-            ArrowUp: 'rotate',
-            s: 'down',
-        };
+    bindEvents(mode) {
+        // Détecte le mode
+        if (mode === 'full'){
+            // Écoute les événements clavier
+            document.querySelector('#restart').addEventListener('click', () => {
+                // Vérifie que le jeu n'est pas déjà commencé
+                if (this._gameStarted){
+                    this.restart();
+                }
+            });
 
-        // Écoute les événements clavier
-        document.addEventListener('keydown', (event) => {
-        const action = keyBindings[event.key];
+            document.addEventListener('keydown', (event) => {
+                const action = this.keyBindings[event.key];
 
-        // Vérifie que la touche est valide
-        if (!action) return;
+                // Vérifie que la touche est valide
+                if (!action) return;
 
-        let currentPiece = pieces[pieces.length-1];
+                let currentPiece = pieces[pieces.length-1];
 
-        // Vérifie si la touche est une rotation ou un déplacement
-            switch (action) {
-                case 'rotate':
-                    // Tourne la pièce
-                    this._piece.rotateClockwise(currentPiece.id, this.model.grid);
-                    break;
-                case 'drop':
-                    // Fait tomber la pièce
-                    this._piece.dropDown(currentPiece.id, this.model.grid);
-                    break;
-                default:
-                    // Déplace la pièce
-                    this.model.movePiece(action);
-                    break;
-            }
-        });
+                // Vérifie si la touche est une rotation ou un déplacement
+                switch (action) {
+                    case 'rotate':
+                        // Tourne la pièce
+                        this._piece.rotateClockwise(currentPiece.id, this.model.grid);
+                        break;
+                    case 'drop':
+                        // Fait tomber la pièce
+                        this._piece.dropDown(currentPiece.id, this.model.grid);
+                        break;
+                    default:
+                        // Déplace la pièce
+                        console.log(action)
+                        this.model.movePiece(action);
+                        break;
+                }
+            });
+        }
 
         // Chaque seconde, on déplace la pièce vers le bas
-        setInterval(() => {
+        this.autoMove = setInterval(() => {
             this.model.play();
         }, 1000);
+    }
+
+    unbindEvents() {
+        clearInterval(this.autoMove);
     }
 
     /// Méthode qui affiche un compte à rebours avant de lancer la partie
@@ -145,14 +142,15 @@ class TetrisController {
         // Récupère l'élement countdown
         let wrap = document.getElementById('countdown');
         let nextPieceCanvas = document.getElementById('next');
+        let buttons = document.getElementById('buttons');
 
         // Si le compte à rebours n'est pas terminé, affiche le nombre de secondes restantes
         // Sinon, cacher la div et lancer la partie
         if (seconds < 0) {
             wrap.classList.add('hidden');
             nextPieceCanvas.classList.remove('hidden');
+            buttons.classList.remove('hidden');
             this.model.startNewGame();
-            this.bindEvents();
         } else {
             wrap.classList.add('wrap-' + seconds);
             setTimeout(() => {
@@ -200,6 +198,47 @@ class TetrisController {
 
         // Affiche le compte à rebours
         this.countdown_chrono(3);
+        setTimeout(() => {
+            // Lance la partie
+            this.bindEvents('full');
+        }, 3000);
+    }
+
+    restart() {
+        this.unbindEvents();
+        this._gameStarted = true;
+
+        // Récupère les valeurs de la taille de la grid
+        const rows = document.querySelector('#rows').value;
+        const cols = document.querySelector('#cols').value;
+
+        // Réinstancie les objets visuels et logiques du jeu
+        const game = new TetrisGame(rows, cols);
+
+        // Cache le menu de début de jeu
+        document.querySelector('#menu').classList.add('hidden');
+        document.querySelector('#next').classList.add('hidden');
+        document.querySelector('#buttons').classList.add('hidden');
+
+        // Récupère la hauteur et la largeur de la grille
+        let gridHeight = this._model.grid.length;
+        let gridWidth = this._model.grid[0].length;
+        // Pour chaque ligne
+        for (let row = 0; row < gridHeight; row++) {
+            // Pour chaque colonne
+            for (let col = 0; col < gridWidth; col++) {
+                // Si l'identifiant de la pièce est égal à l'identifiant de la pièce actuelle
+                // Supprime l'identifiant de la pièce de la grille
+                this._model.grid[row][col] = 0
+
+            }
+        }
+
+        // Affiche le compte à rebours
+        this.countdown_chrono(4);
+        setTimeout(() => {
+            this.bindEvents('partial');
+        }, 4000);
     }
 }
 
