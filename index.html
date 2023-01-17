@@ -46,17 +46,25 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-6" id="game">
+        <div class="col-8" id="game">
             <canvas id="tetris"></canvas>
         </div>
-        <div class="col-6 hidden" id="next">
+        <div class="col-4 hidden" id="next">
             <div class="row sideGame">
-                <h2 class="title">Pièce <br> suivante</h2> <span class="colon"> : </span>
+                <h2 class="title">Pièce <br> suivante</h2>
                 <canvas id="nextPiece"></canvas>
             </div>
             <div class="row sideGame">
-                <h2 class="title">Score</h2> <span class="colon"> : </span>
+                <h2 class="title">Score</h2>
                 <div id="score">0</div>
+            </div>
+            <div class="row sideGame">
+                <h2 class="title">Niveau</h2>
+                <div id="level">1</div>
+            </div>
+            <div class="row sideGame">
+                <h2 class="title">Lignes</h2>
+                <div id="lines">0</div>
             </div>
         </div>
     </div>

@@ -152,7 +152,8 @@ body {
 #next{
     display: flex;
     align-items: center;
-    flex-direction: column
+    flex-direction: column;
+    padding: 100px;
 }
 
 #next h2{
@@ -168,16 +169,13 @@ body {
     max-width: 160px;
 }
 
-#next .colon{
-    font-size: 5rem;
-}
-
 .sideGame{
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     flex-direction: column;
+    user-select: none;
 }
 
 #credits{
@@ -191,6 +189,7 @@ body {
     width: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
+    user-select: none;
 }
 
 #credits h2{

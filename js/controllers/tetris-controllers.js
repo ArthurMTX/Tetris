@@ -20,7 +20,7 @@ class TetrisController {
         // Intancie les objets visuels et logiques du jeu
         this._model = new TetrisGame(20, 10);
         this._view = new TetrisView();
-        this._piece = new TetrisPiece();
+        this._piece = new TetrisPiece(-1, 0,0,0,0,0);
 
         pieces = this._piece.pieces;
         blockSize = this._view.blockSize;
