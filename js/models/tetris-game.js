@@ -116,13 +116,16 @@ class TetrisGame {
         for (let row = 0; row < this.gridRows; row++) {
             // Si la ligne est pleine
             if (this.grid[row].every(col => col !== 0)) {
-                // Supprime la ligne
+                // Supprime la ligne avec une animation de fade
                 this.grid.splice(row, 1);
+
                 // Ajoute une ligne vide en haut de la grille
                 this.grid.unshift(Array(this.gridCols).fill(0));
+
+                // Augmente le score
+                this.score += 100;
             }
         }
-        console.log(this.grid)
     }
 
     /// Fonction qui déplace la pièce

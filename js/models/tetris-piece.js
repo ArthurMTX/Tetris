@@ -283,11 +283,17 @@ class TetrisPiece {
             if (points.length !== 0 || newPoints.length !== 0) {
                 // Si le mouvement est possible
                 if (!impossibleMouvement) {
+                    // Get canvas
+                    let canvas = document.getElementById("tetris");
+                    // Get context
+                    let ctx = canvas.getContext("2d");
+
                     // Pour chaque point de la pièce
                     for (let i = 0; i < points.length; i++) {
                         // Vide la case de la grille
                         grid[points[i].row][points[i].col] = 0;
                     }
+
                     // Pour chaque nouvelle coordonnée de la pièce
                     for (let i = 0; i < newPoints.length; i++) {
                         // Remplit la case de la grille

@@ -121,7 +121,6 @@ class TetrisController {
                         break;
                     default:
                         // Déplace la pièce
-                        console.log(action)
                         this.model.movePiece(action);
                         break;
                 }
