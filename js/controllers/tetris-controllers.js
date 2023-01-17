@@ -46,6 +46,9 @@ class TetrisController {
         this._model.bindRefreshBoard(this.bindRefreshBoard);
         this._piece.bindRefreshBoard(this.bindRefreshBoard);
 
+        this.bindRemoveLine = this.bindRemoveLine.bind(this);
+        this._view.bindRemoveLine(this.bindRemoveLine);
+
         //this.bindEndGame = this.bindEndGame.bind(this);
         //this._view.bindEndGame(this.bindEndGame);
 
@@ -72,6 +75,10 @@ class TetrisController {
     
     bindRefreshBoard (grid, nextPiece) {
         this._view.refreshBoard(grid, nextPiece);
+    }
+
+    bindRemoveLine () {
+        this._model.removeLine();
     }
 
     // Getters

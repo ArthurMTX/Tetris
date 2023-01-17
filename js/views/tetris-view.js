@@ -140,7 +140,6 @@ class TetrisView {
                             }
                         }
                     }
-                    console.log(piece.blocks);
 
                     // Applique la texture de la pièce
                     const blockTexture = new Image();
@@ -156,11 +155,18 @@ class TetrisView {
             }
         }
 
+        // Si une ligne est complète, la supprime
+        this.removeLine();
+
         this.drawGrid(gridWidth, gridHeight);
 
         if (mode === 'full') {
             this.drawNextPieceGrid(4, 4);
         }
+    }
+
+    bindRemoveLine(bindRemoveLine) {
+        this.removeLine = bindRemoveLine;
     }
 }
 
