@@ -52,6 +52,27 @@ class TetrisController {
                 }
             }
         });
+
+        document.querySelector('#restart').addEventListener('click', () => {
+            this._gameStarted = false;
+            // Récupère la hauteur et la largeur de la grille
+            let gridHeight = this._model.grid.length;
+            let gridWidth = this._model.grid[0].length;
+             // Pour chaque ligne
+            for (let row = 0; row < gridHeight; row++) {
+            // Pour chaque colonne
+            for (let col = 0; col < gridWidth; col++) {
+                // Si l'identifiant de la pièce est égal à l'identifiant de la pièce actuelle
+                    // Supprime l'identifiant de la pièce de la grille
+                    this._model.grid[row][col] = 0
+
+                }
+            }
+            if (!this._gameStarted){
+                this._gameStarted = true
+                this.start();
+            }
+        });
     }
     
     bindRefreshBoard (grid, nextPiece) {
