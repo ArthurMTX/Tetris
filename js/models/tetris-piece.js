@@ -142,7 +142,7 @@ class TetrisPiece {
         }
 
         // Prends le premier point de la pièce
-        let firstPoint = points[0];
+        let firstPoint = points[2];
 
         // Pour chaque point de la pièce
         for (let i = 0; i < points.length; i++) {
