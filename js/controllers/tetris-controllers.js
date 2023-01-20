@@ -49,6 +49,9 @@ class TetrisController {
         this.bindRemoveLine = this.bindRemoveLine.bind(this);
         this._view.bindRemoveLine(this.bindRemoveLine);
 
+        this.bindUnbindEvents = this.bindUnbindEvents.bind(this);
+        this._model.bindUnbindEvents(this.bindUnbindEvents);
+
         //this.bindEndGame = this.bindEndGame.bind(this);
         //this._view.bindEndGame(this.bindEndGame);
 
@@ -79,6 +82,10 @@ class TetrisController {
 
     bindRemoveLine () {
         this._model.removeLine();
+    }
+
+    bindUnbindEvents () {
+        this.unbindEvents();
     }
 
     // Getters

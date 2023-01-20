@@ -45,10 +45,10 @@ class TetrisView {
                     this.nextPieceCtx.drawImage(blockTexture, j * this.blockSize, i * this.blockSize, this.blockSize, this.blockSize);
 
                     // Applique un overlay de couleur sur le bloc
-                    this.nextPieceCtx.globalAlpha = 0.7;
+                    //this.nextPieceCtx.globalAlpha = 0.7;
                     this.nextPieceCtx.fillStyle = nextPiece.color;
                     this.nextPieceCtx.fillRect(j * this.blockSize, i * this.blockSize, this.blockSize, this.blockSize);
-                    this.nextPieceCtx.globalAlpha = 1;
+                    //this.nextPieceCtx.globalAlpha = 1;
                 }
             }
         }
@@ -157,6 +157,7 @@ class TetrisView {
 
         // Si une ligne est complète, la supprime
         this.removeLine();
+        this.detectGameOver(grid);
 
         this.drawGrid(gridWidth, gridHeight);
 
@@ -167,6 +168,18 @@ class TetrisView {
 
     bindRemoveLine(bindRemoveLine) {
         this.removeLine = bindRemoveLine;
+    }
+
+    detectGameOver(grid) {
+        let gridCols = grid[0].length;
+        let gridRows = grid.length;
+
+        // Pour chaque colonne de la grille, multiplie la valeur de la première ligne par la valeur de la deuxième ligne
+        for (let col = 0; col < gridCols; col++) {
+            if (grid[0][col] !== 0 && grid[1][col] !== 0) {
+                this.gameOver = true;
+            }
+        }
     }
 }
 

@@ -97,35 +97,35 @@ class TetrisGame {
         this.gameOver = false;
     }
 
-    // Méthode qui gère la fin de la partie
-    endGame() {
-        let check_col = [];
-        let col = (this.gridCols / 2) - 3
-
-        for ( col ; col < (this.gridCols/2) + 3; col++) {
-            for (let row = 0; row < this.gridRows; row++) {
-                check_col = this.grid[row][col];
-            }
-        }
-        console.log(check_col)
-        // pour chaque lignes si une colone est toujours différents de 0, c'est perdu
-    }
-
     removeLine() {
         // Pour chaque ligne de la grille
         for (let row = 0; row < this.gridRows; row++) {
             // Si la ligne est pleine
             if (this.grid[row].every(col => col !== 0)) {
-                // Supprime la ligne avec une animation de fade
+                // Supprime la ligne
                 this.grid.splice(row, 1);
+                // Décale toutes les lignes au dessus de la ligne supprimée
+                for (let row2 = row; row2 > 0; row2--) {
+                    for (let col = 0; col < this.gridCols; col++) {
+                        this.grid[row2][col] = this.grid[row2 - 1][col];
+                    }
+                }
 
-                // Ajoute une ligne vide en haut de la grille
-                this.grid.unshift(Array(this.gridCols).fill(0));
-
-                // Augmente le score
-                this.score += 100;
+                this.refreshBoard(this.grid, 'partial');
+                this.score += 10;
             }
         }
+    }
+
+    endGame(){
+        console.log('Game Over');
+
+        // Arrête le jeu
+        this.gameOver = true;
+        // Affiche le message de fin de partie
+        document.querySelector('#game-over').style.display = 'block';
+        document.querySelector('#game-over').style.zIndex = '99999';
+        this.unbindEvents();
     }
 
     /// Fonction qui déplace la pièce
@@ -309,6 +309,10 @@ class TetrisGame {
 
     bindRefreshBoard(callback){
         this.refreshBoard = callback;
+    }
+
+    bindUnbindEvents(callback){
+        this.unbindEvents = callback;
     }
 
     play() {

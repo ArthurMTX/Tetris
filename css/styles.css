@@ -197,7 +197,6 @@ body {
 
 #credits{
     bottom: 0;
-    padding: 10px;
     position: absolute;
     z-index: 999;
     display: flex;
