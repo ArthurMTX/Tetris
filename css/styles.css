@@ -195,6 +195,68 @@ body {
     margin-right: 10px;
 }
 
+#gameOver{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    background: rgba(0,0,0,0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 99999;
+    backdrop-filter: blur(5px);
+    display: none;
+}
+
+#gameOver .gameOverTitle{
+    color: red;
+}
+
+#gameOver svg.gameOverImage{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+}
+
+#gameOver #Calque_1{
+    animation: moveHead 2s linear infinite;
+}
+
+@keyframes moveHead {
+    0% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(0, 10px);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+#gameOver #Calque_2{
+    animation: moveMouth 2s linear infinite;
+}
+
+@keyframes moveMouth {
+    0% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(0, -10px);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
 #credits{
     bottom: 0;
     position: absolute;

@@ -37,7 +37,7 @@ class TetrisView {
 
         // Applique la texture de la pièce
         const blockTexture = new Image();
-        blockTexture.src = './Assets/img/block.jpg';
+        blockTexture.src = './Assets/img/block.png';
 
         for (let i = 0; i < nextPiece.pattern.length; i++) {
             for (let j = 0; j < nextPiece.pattern[i].length; j++) {
@@ -147,17 +147,17 @@ class TetrisView {
                     this.ctx.drawImage(blockTexture, col * this.blockSize, row * this.blockSize, this.blockSize, this.blockSize);
 
                     // Applique un overlay de couleur sur le bloc
-                    this.ctx.globalAlpha = 0.7;
+                    //this.ctx.globalAlpha = 0.7;
                     this.ctx.fillStyle = piece.color;
                     this.ctx.fillRect(col * this.blockSize, row * this.blockSize, this.blockSize, this.blockSize);
-                    this.ctx.globalAlpha = 1;
+                    //this.ctx.globalAlpha = 1;
                 }
             }
         }
 
         // Si une ligne est complète, la supprime
         this.removeLine();
-        this.detectGameOver(grid);
+        //this.detectGameOver(grid);
 
         this.drawGrid(gridWidth, gridHeight);
 
@@ -174,9 +174,9 @@ class TetrisView {
         let gridCols = grid[0].length;
         let gridRows = grid.length;
 
-        // Pour chaque colonne de la grille, multiplie la valeur de la première ligne par la valeur de la deuxième ligne
         for (let col = 0; col < gridCols; col++) {
             if (grid[0][col] !== 0 && grid[1][col] !== 0) {
+                console.log('Game Over');
                 this.gameOver = true;
             }
         }

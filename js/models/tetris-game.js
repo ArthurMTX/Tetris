@@ -102,15 +102,14 @@ class TetrisGame {
         for (let row = 0; row < this.gridRows; row++) {
             // Si la ligne est pleine
             if (this.grid[row].every(col => col !== 0)) {
-                // Supprime la ligne
-                this.grid.splice(row, 1);
                 // Décale toutes les lignes au dessus de la ligne supprimée
                 for (let row2 = row; row2 > 0; row2--) {
                     for (let col = 0; col < this.gridCols; col++) {
-                        this.grid[row2][col] = this.grid[row2 - 1][col];
+                        if (row2 !== 0){
+                            this.grid[row2][col] = this.grid[row2 - 1][col];
+                        }
                     }
                 }
-
                 this.refreshBoard(this.grid, 'partial');
                 this.score += 10;
             }
@@ -326,6 +325,16 @@ class TetrisGame {
             });
 
             this.nextPiece = this.createRandomPiece('ignore');
+
+            // Regarde si la pièce peut être placée a la position initiale
+            if (this.movePiece('down') === 0) {
+                // Si la pièce ne peut pas être placée, c'est la fin de la partie
+                this.unbindEvents();
+
+                // Affiche le message de fin de partie
+                document.getElementById('gameOver').style.display = 'absolute';
+                console.log("Game Over");
+            }
         }
     }
 }
