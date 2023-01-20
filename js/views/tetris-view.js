@@ -143,7 +143,7 @@ class TetrisView {
 
                     // Applique la texture de la pièce
                     const blockTexture = new Image();
-                    blockTexture.src = './Assets/img/block.jpg';
+                    blockTexture.src = './Assets/img/block.png';
                     this.ctx.drawImage(blockTexture, col * this.blockSize, row * this.blockSize, this.blockSize, this.blockSize);
 
                     // Applique un overlay de couleur sur le bloc
