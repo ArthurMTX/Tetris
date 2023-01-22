@@ -17,7 +17,7 @@
 }
 
 *.hidden{
-    display: none;
+    display: none!important;
 }
 
 body {
@@ -204,7 +204,6 @@ body {
     background: rgba(0,0,0,0.7);
     backdrop-filter: blur(5px);
     z-index: 9999;
-    display: none;
     overflow: hidden;
 }
 

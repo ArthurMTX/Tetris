@@ -157,9 +157,11 @@ class TetrisGame {
 
         // Arrête le jeu
         this.gameOver = true;
+
         // Affiche le message de fin de partie
-        document.querySelector('#gameOver').style.display = 'flex';
-        document.querySelector('#gameOver').style.zIndex = '99999';
+        document.querySelector('#gameOver').classList.remove('hidden');
+
+        // Arrête le timer et les événements clavier
         this.unbindEvents();
 
         // Affiche le score
@@ -173,6 +175,11 @@ class TetrisGame {
 
         // Affiche le temps
         document.querySelector('#gameOverTime').innerHTML = this.time;
+
+        // Ajoute un événement au bouton de redémarrage
+        document.querySelector('#gameOverRestart').addEventListener('click', () => {
+            this.restart();
+        });
     }
 
     /// Fonction qui déplace la pièce
@@ -368,6 +375,10 @@ class TetrisGame {
 
     bindUnbindEvents(callback){
         this.unbindEvents = callback;
+    }
+
+    bindRestart(callback){
+        this.restart = callback;
     }
 
     play() {

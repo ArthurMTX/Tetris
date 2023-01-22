@@ -64,6 +64,9 @@ class TetrisController {
         this.bindSetScore = this.bindSetScore.bind(this);
         this._piece.bindSetScore(this.bindSetScore);
 
+        this.bindRestart = this.bindRestart.bind(this);
+        this._model.bindRestart(this.bindRestart);
+
         // Intancie le contrôle afin de commencer la partie
         document.querySelector('#start').addEventListener('click', () => {
             // Vérifie que le jeu n'est pas déjà commencé
@@ -107,6 +110,10 @@ class TetrisController {
 
     bindGetLevel () {
         return this.getLevel();
+    }
+
+    bindRestart () {
+        this.restart();
     }
 
     bindSetScore (score) {
@@ -247,6 +254,9 @@ class TetrisController {
         // Réinstancie les objets visuels et logiques du jeu
         const game = new TetrisGame(rows, cols);
 
+        // Cache la page de fin de jeu
+        document.querySelector('#gameOver').classList.add('hidden');
+
         // Cache le menu de début de jeu
         document.querySelector('#menu').classList.add('hidden');
 
@@ -268,6 +278,9 @@ class TetrisController {
 
         // Réinstancie les objets visuels et logiques du jeu
         const game = new TetrisGame(rows, cols);
+
+        // Cache la page de fin de jeu
+        document.querySelector('#gameOver').classList.add('hidden');
 
         // Cache le menu de début de jeu
         document.querySelector('#menu').classList.add('hidden');
