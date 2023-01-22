@@ -1,376 +1,423 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap'); /* Import de police distante */
+/* ################################################################################################################################################## */
+/* ##################################################################### FONTS ###################################################################### */
+/* ################################################################################################################################################## */
+
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'); /* Import de police distante */
 @font-face {
-  font-family: 'Tetrominoes';
+  font-family: 'Tetrominoes'; /* Import de police locale */
   src: url('../Assets/fonts/tetrominoes.eot'); /* IE9+ */
   src: url('../Assets/fonts/tetrominoes.woff2') format('woff2'), /* Navigateurs modernes (Chrome, Firefox, etc.) */
        url('../Assets/fonts/tetrominoes.woff') format('woff'), /* Navigateurs moins modernes (Safari, IE, etc.) */
        url('../Assets/fonts/tetrominoes.ttf')  format('truetype'); /* Navigateurs mobiles (Android, iOS, etc.) */
 }
 
-/* Réinitialise les styles par défaut des éléments */
+/* ################################################################################################################################################## */
+/* #################################################################### GENERAL ##################################################################### */
+/* ################################################################################################################################################## */
+
+/* Définit les espacements et le comportement des éléments par défaut */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    scroll-behavior: smooth;
+    margin: 0; /* Enlève les marges par défaut */
+    padding: 0; /* Enlève les espacements par défaut */
+    box-sizing: border-box; /* Définit le comportement de la propriété width (inclure le padding et la border d'un element dans sa taille totale) */
+    scroll-behavior: smooth; /* Définit le comportement du scroll */
 }
 
+/* Définit la classe servant à cacher les éléments */
 *.hidden{
-    display: none!important;
+    display: none!important; /* Force l'élément à ne pas être affiché */
 }
 
+/* Définit le fond de la page */
 body {
-    background: linear-gradient(90deg, #53a0fd, #01c2f3);
+    background: linear-gradient(90deg, #53a0fd, #01c2f3); /* Définit le dégradé de fond */
 }
 
-/* Définit la style de la page */
+/* ################################################################################################################################################## */
+/* ##################################################################### MENU ####################################################################### */
+/* ################################################################################################################################################## */
+
+/* Définit le style du menu du jeu */
 #menu{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 100;
-    background-color: #9aa2a5;
-    background-image: linear-gradient(335deg, #960000 23px, rgba(0, 0, 0, 0) 23px), linear-gradient(155deg, #b10000 23px, rgba(0, 0, 0, 0) 23px), linear-gradient(335deg, #960000 23px, rgba(0, 0, 0, 0) 23px), linear-gradient(155deg, #b10000 23px, rgba(0, 0, 0, 0) 23px);;
-    background-size: 58px 58px;
-    background-position: 0 2px, 4px 35px, 29px 31px, 34px 6px;
-    user-select: none;
-    transition: opacity 1s, transform 1s;
-    text-shadow: -2px 0 0 #fdff2a, -4px 0 0 #df4a42, 2px 0 0 #91fcfe, 4px 0 0 #4405fc;
-    letter-spacing: 5px;
+    position: fixed; /* Positionne l'élément par rapport à la fenêtre */
+    top: 0; /* Positionne l'élément en haut de la fenêtre */
+    left: 0; /* Positionne l'élément à gauche de la fenêtre */
+    width: 100vw; /* Définit la largeur de l'élément (100% du viewport width) */
+    height: 100vh; /* Définit la hauteur de l'élément (100% du viewport height) */
+    z-index: 100; /* Définit la profondeur de l'élément */
+    background-color: #9aa2a5; /* Définit la couleur de fond */
+    background-image: linear-gradient(335deg, #960000 23px,
+                        rgba(0, 0, 0, 0) 23px),
+                        linear-gradient(155deg, #b10000 23px,
+                        rgba(0, 0, 0, 0) 23px),
+                        linear-gradient(335deg, #960000 23px,
+                        rgba(0, 0, 0, 0) 23px),
+                        linear-gradient(155deg, #b10000 23px, rgba(0, 0, 0, 0) 23px); /* Définit la texture de fond (briques) */
+    background-size: 58px 58px; /* Définit la taille de la texture de fond */
+    background-position: 0 2px,
+                            4px 35px,
+                            29px 31px,
+                            34px 6px; /* Définit la position de la texture de fond */
+    user-select: none; /* Empêche la sélection de texte */
+    transition: opacity 1s, transform 1s; /* Définit l'animation de transition */
+    text-shadow: -2px 0 0 #fdff2a,
+                    -4px 0 0 #df4a42,
+                    2px 0 0 #91fcfe,
+                    4px 0 0 #4405fc; /* Définit l'ombre du texte (effet glitch) */
+    letter-spacing: 5px; /* Définit l'espacement entre les lettres */
 }
 
-/* Classe servant à cacher le menu quand la partie est lancée */
-#menu.hidden{
-    transform: translateX(-100%);
-    opacity: 0;
-}
-
-/* Style du titre principal */
+/* Style du titre du menu du jeu */
 #menu .title{
-    margin-top: 20vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin-top: 20vh; /* Définit la marge en haut de l'élément */
+    display: flex; /* Définit le comportement de l'élément */
+    justify-content: center; /* Centre l'élément horizontalement */
+    align-items: center; /* Centre l'élément verticalement */
 }
 
-/* Style du titre principal */
+/* Style du titre principal du menu du jeu */
 #menu .title h1{
-    font-family: 'Tetrominoes', cursive;
-    font-size: 5rem;
-    color: white;
-    animation: titleAnimation 1s infinite;
+    font-family: 'Tetrominoes', cursive; /* Définit la police de l'élément */
+    font-size: 5rem; /* Définit la taille de la police de l'élément */
+    color: white; /* Définit la couleur de l'élément */
+    animation: titleAnimation 1s infinite; /* Définit l'animation de l'élément */
 }
 
-/* Animation du titre */
+/* Animation du titre principal du menu du jeu */
 @keyframes titleAnimation {
     0%,100% {
-        transform: scale(1) rotate(0deg);
+        transform: scale(1) rotate(0deg); /* Définit la transformation de l'élément */
     }
     33% {
-        transform: scale(1.05) rotate(1deg);
+        transform: scale(1.05) rotate(1deg); /* Définit la transformation de l'élément */
     }
     66% {
-        transform: scale(1.1) rotate(-1deg);
+        transform: scale(1.1) rotate(-1deg); /* Définit la transformation de l'élément */
     }
 }
 
-/* Style du titre */
+/* Style du titre des paramètres */
 #menu #settings .title{
-    font-family: 'Press Start 2P', sans-serif;
-    color: white;
-    margin-top: 2vh;
-    font-size: 1.5rem;
+    font-family: 'Press Start 2P', sans-serif; /* Définit la police de l'élément */
+    color: white; /* Définit la couleur de l'élément */
+    margin-top: 2vh; /* Définit la marge en haut de l'élément */
+    font-size: 1.5rem; /* Définit la taille de la police de l'élément */
 }
 
 /* Style du formulaire */
 #menu #settings .form{
-    margin-top: 5vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
+    margin-top: 5vh; /* Définit la marge en haut de l'élément */
+    display: flex; /* Définit le comportement de l'élément */
+    justify-content: center; /* Centre l'élément horizontalement */
+    align-items: center; /* Centre l'élément verticalement */
+    color: white; /* Définit la couleur de l'élément */
 }
 
-/* Style des inputs */
+/* Style des inputs du formulaire */
 #menu #settings .form input{
-    margin: 0 1vw;
-    border: 1px solid white;
-    color: white;
-    background: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+    margin: 0 1vw; /* Définit la marge à gauche et à droite de l'élément */
+    border: 1px solid white; /* Définit la bordure de l'élément */
+    color: white; /* Définit la couleur de l'élément */
+    background: transparent; /* Définit la couleur de fond de l'élément */
+    display: flex; /* Définit le comportement de l'élément */
+    justify-content: center; /* Centre l'élément horizontalement */
+    align-items: center; /* Centre l'élément verticalement */
+    text-align: center; /* Centre le texte de l'élément */
 }
 
 /* Style des labels */
 #menu #settings .form label{
-    margin-top: 0.5vw;
+    margin-top: 0.5vw; /* Définit la marge en haut de l'élément */
 }
 
-/* Style du bouton de démarrage */
+/* Style du boutons de démarrage */
 #menu #settings #start{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 5vh auto;
-    font-family: 'Press Start 2P', cursive;
-    color: white;
-    line-height: 40px;
-    letter-spacing: 5px;
-    font-size: 2rem;
-    text-shadow: -2px 0 0 #fdff2a, -4px 0 0 #df4a42, 2px 0 0 #91fcfe, 4px 0 0 #4405fc;
+    display: flex; /* Définit le comportement de l'élément */
+    justify-content: center; /* Centre l'élément horizontalement */
+    align-items: center; /* Centre l'élément verticalement */
+    margin: 5vh auto; /* Définit la marge en haut et en bas de l'élément */
+    font-family: 'Press Start 2P', cursive; /* Définit la police de l'élément */
+    color: white; /* Définit la couleur de l'élément */
+    line-height: 40px; /* Définit la hauteur de ligne de l'élément */
+    letter-spacing: 5px; /* Définit l'espacement entre les lettres de l'élément */
+    font-size: 2rem; /* Définit la taille de la police de l'élément */
+    text-shadow: -2px 0 0 #fdff2a,
+                    -4px 0 0 #df4a42,
+                    2px 0 0 #91fcfe,
+                    4px 0 0 #4405fc; /* Définit l'ombre du texte (effet glitch) */
 }
 
 /* Animation du titre */
 .blink {
-    animation: blink 1s steps(4, start) infinite
+    animation: blink 1s steps(4, start) infinite; /* Définit l'animation de l'élément */
 }
 
 /* Animation de la couleur du texte */
 @keyframes blink {
     to {
-        visibility: hidden;
+        visibility: hidden; /* Définit la visibilité de l'élément */
     }
 }
 
-/* Définit la taille de la page */
+/* ################################################################################################################################################## */
+/* ###################################################################### JEU ####################################################################### */
+/* ################################################################################################################################################## */
+
+/* Définit la taille de la page de jeu */
 #game{
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    height: 100vh; /* Définit la hauteur de l'élément (100% de la taille de l'écran) */
+    display: flex; /* Définit le comportement de l'élément */
+    flex-direction: column; /* Définit la direction de l'élément */
+    justify-content: center; /* Centre l'élément verticalement */
+    align-items: center; /* Centre l'élément horizontalement */
 }
 
-/* Style de base de l'élément canvas */
+/* Styles de base de l'élément de jeu */
 #tetris {
-    display: block;
-    height: 80vh;
-    width: 40vh;
-    aspect-ratio: auto 1 / 2;
+    display: block; /* Définit le comportement de l'élément */
+    height: 80vh; /* Définit la hauteur de l'élément */
+    width: 40vh; /* Définit la largeur de l'élément */
+    aspect-ratio: auto 1 / 2; /* Définit le rapport du ratio de l'élément */
 }
 
+/* Styles de base de la barre latérale de l'élément de jeu */
 #next{
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    padding: 20px;
+    display: flex; /* Définit le comportement de l'élément */
+    align-items: center; /* Centre l'élément verticalement */
+    flex-direction: column; /* Définit la direction de l'élément */
+    padding: 20px; /* Définit la marge à l'intérieur de l'élément */
 }
 
+/* Style des titres de la barre latérale de l'élément de jeu */
 #next h2{
-    margin-right: 10px;
+    margin-right: 10px; /* Définit la marge à droite de l'élément */
 }
 
-#next.hidden{
-    display: none;
-}
-
+/* Style des titres du canva de l'élément de jeu */
 #next #nextPiece{
-    max-height: 160px;
-    max-width: 160px;
+    max-height: 160px; /* Définit la hauteur maximale de l'élément */
+    max-width: 160px; /* Définit la largeur maximale de l'élément */
 }
 
+/* Styles des lignes de la barre latérale de l'élément de jeu */
 .sideGame{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    user-select: none;
+    width: 100%; /* Définit la largeur de l'élément */
+    height: 100%; /* Définit la hauteur de l'élément */
+    display: flex; /* Définit le comportement de l'élément */
+    justify-content: center; /* Centre l'élément horizontalement */
+    flex-direction: column; /* Définit la direction de l'élément */
+    user-select: none; /* Empêche la sélection de l'élément */
 }
 
+/* Style des boutons de jeu */
 #pause, #restart{
-    cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAzElEQVRYR+2X0Q6AIAhF5f8/2jYXZkwEjNSVvVUjDpcrGgT7FUkI2D9xRfQETwNIiWO85wfINfQUEyxBG2ArsLwC0jioGt5zFcwF4OYDPi/mBYKm4t0U8ATgRm3ThFoAqkhNgWkA0jJLvaOVSs7j3qMnSgXWBMiWPXe94QqMBMBc1VZIvaTu5u5pQewq0EqNZvIEMCmxAawK0DNkay9QmfFNAJUXfgGgUkLaE7j/h8fnASkxHTz0DGIBMCnBeeM7AArpUd3mz2x3C7wADglA8BcWMZhZAAAAAElFTkSuQmCC) 14 0,pointer!important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 45%;
+    cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAzElEQVRYR+2X0Q6AIAhF5f8/2jYXZkwEjNSVvVUjDpcrGgT7FUkI2D9xRfQETwNIiWO85wfINfQUEyxBG2ArsLwC0jioGt5zFcwF4OYDPi/mBYKm4t0U8ATgRm3ThFoAqkhNgWkA0jJLvaOVSs7j3qMnSgXWBMiWPXe94QqMBMBc1VZIvaTu5u5pQewq0EqNZvIEMCmxAawK0DNkay9QmfFNAJUXfgGgUkLaE7j/h8fnASkxHTz0DGIBMCnBeeM7AArpUd3mz2x3C7wADglA8BcWMZhZAAAAAElFTkSuQmCC) 14 0,pointer!important; /* Définit le curseur de l'élément */
+    display: flex; /* Définit le comportement de l'élément */
+    justify-content: center; /* Centre l'élément horizontalement */
+    align-items: center; /* Centre l'élément verticalement */
+    width: 45%; /* Définit la largeur de l'élément */
 }
 
+/* Style du bouton de pause de jeu */
 #pause{
-    margin-right: 10px;
+    margin-right: 10px; /* Définit la marge à droite de l'élément */
 }
 
+/* ################################################################################################################################################## */
+/* ################################################################### GAMEOVER ##################################################################### */
+/* ################################################################################################################################################## */
+
+/* Style du menu de fin de partie */
 #gameOver{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(5px);
-    z-index: 9999;
-    overflow: hidden;
+    position: absolute; /* Définit la position de l'élément */
+    top: 0; /* Positionne l'élément en haut */
+    left: 0; /* Positionne l'élément à gauche */
+    width: 100vw; /* Définit la largeur de l'élément */
+    height: 100vh; /* Définit la hauteur de l'élément */
+    background: rgba(0,0,0,0.7); /* Définit la couleur de l'élément (noire avec une opacité de 70%) */
+    backdrop-filter: blur(5px); /* Définit le flou de l'élément */
+    z-index: 9999; /* Définit la position de l'élément par rapport aux autres éléments */
+    overflow: hidden; /* Cache les éléments dépassant de l'élément */
 }
 
+/* Style de la popup du menu de fin de partie */
 #gameOver #gameOverPopup{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50%;
-    height: 50%;
-    background: rgba(0,0,0,0.95);
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 99999;
-    backdrop-filter: blur(5px);
-    transition: all 0.5s ease;
-    display: flex;
-    border-radius: 10px;
+    position: absolute; /* Définit la position de l'élément */
+    top: 50%; /* Positionne l'élément au milieu */
+    left: 50%; /* Positionne l'élément au milieu */
+    transform: translate(-50%, -50%); /* Définit la position de l'élément par rapport à sa position initiale */
+    width: 50%; /* Définit la largeur de l'élément */
+    height: 50%; /* Définit la hauteur de l'élément */
+    background: rgba(0,0,0,0.95); /* Définit la couleur de l'élément (noire avec une opacité de 95%) */
+    justify-content: center; /* Centre l'élément horizontalement */
+    align-items: center; /* Centre l'élément verticalement */
+    flex-direction: column; /* Définit la direction de l'élément */
+    z-index: 99999; /* Définit la position de l'élément par rapport aux autres éléments */
+    backdrop-filter: blur(5px); /* Définit le flou de l'élément */
+    display: flex; /* Définit le comportement de l'élément */
+    border-radius: 10px; /* Définit les coins arrondis de l'élément */
 }
 
+/* Style du titre du menu de fin de partie */
 #gameOver .gameOverTitle{
-    color: red;
-    font-size: 3rem;
-    text-align: center;
+    color: red; /* Définit la couleur de l'élément */
+    font-size: 3rem; /* Définit la taille de la police de l'élément */
+    text-align: center; /* Centre le texte de l'élément */
 }
 
+/* Style de l'image du menu de fin de partie */
 #gameOver svg.gameOverImage{
-    position: absolute;
-    top: 1rem;
-    left: 0;
-    width: 100%;
-    height: 40%;
+    position: absolute; /* Définit la position de l'élément */
+    top: 1rem; /* Positionne l'élément en haut */
+    left: 0; /* Positionne l'élément à gauche */
+    width: 100%; /* Définit la largeur de l'élément */
+    height: 40%; /* Définit la hauteur de l'élément */
 }
 
+/* Style des statistiques du menu de fin de partie */
 #gameOver .gameOverStats{
-    /* Place div at the bottom of the parent container */
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 40%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    position: absolute; /* Définit la position de l'élément */
+    bottom: 0; /* Positionne l'élément en bas */
+    left: 0; /* Positionne l'élément à gauche */
+    width: 100%; /* Définit la largeur de l'élément */
+    height: 40%; /* Définit la hauteur de l'élément */
+    display: flex; /* Définit le comportement de l'élément */
+    justify-content: center; /* Centre l'élément horizontalement */
+    align-items: center; /* Centre l'élément verticalement */
+    flex-direction: column; /* Définit la direction de l'élément */
 }
 
+/* Style des titres des statistiques du menu de fin de partie */
 #gameOver .gameOverStats h2{
-    color: white;
-    font-size: 1.5rem;
-    padding: 0 1rem;
-    margin: 0;
+    color: white; /* Définit la couleur de l'élément */
+    font-size: 1.5rem; /* Définit la taille de la police de l'élément */
+    padding: 0 1rem; /* Définit la marge de l'élément */
+    margin: 0; /* Définit la marge de l'élément */
 }
 
+/* Style des valeurs des statistiques du menu de fin de partie */
 #gameOver .gameOverStats h2 span{
-    color: red;
+    color: red; /* Définit la couleur de l'élément */
 }
 
+/* Style du bouton de redémarrage du menu de fin de partie */
 #gameOver #gameOverRestart{
-    cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAzElEQVRYR+2X0Q6AIAhF5f8/2jYXZkwEjNSVvVUjDpcrGgT7FUkI2D9xRfQETwNIiWO85wfINfQUEyxBG2ArsLwC0jioGt5zFcwF4OYDPi/mBYKm4t0U8ATgRm3ThFoAqkhNgWkA0jJLvaOVSs7j3qMnSgXWBMiWPXe94QqMBMBc1VZIvaTu5u5pQewq0EqNZvIEMCmxAawK0DNkay9QmfFNAJUXfgGgUkLaE7j/h8fnASkxHTz0DGIBMCnBeeM7AArpUd3mz2x3C7wADglA8BcWMZhZAAAAAElFTkSuQmCC) 14 0,pointer!important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 15%;
-    margin-top: 1rem;
+    cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAzElEQVRYR+2X0Q6AIAhF5f8/2jYXZkwEjNSVvVUjDpcrGgT7FUkI2D9xRfQETwNIiWO85wfINfQUEyxBG2ArsLwC0jioGt5zFcwF4OYDPi/mBYKm4t0U8ATgRm3ThFoAqkhNgWkA0jJLvaOVSs7j3qMnSgXWBMiWPXe94QqMBMBc1VZIvaTu5u5pQewq0EqNZvIEMCmxAawK0DNkay9QmfFNAJUXfgGgUkLaE7j/h8fnASkxHTz0DGIBMCnBeeM7AArpUd3mz2x3C7wADglA8BcWMZhZAAAAAElFTkSuQmCC) 14 0,pointer!important; /* Définit le curseur de l'élément */
+    display: flex; /* Définit le comportement de l'élément */
+    justify-content: center; /* Centre l'élément horizontalement */
+    align-items: center; /* Centre l'élément verticalement */
+    width: 15%; /* Définit la largeur de l'élément */
+    margin-top: 1rem; /* Définit la marge de l'élément */
 }
 
+/* Style de la partie 1 de l'image du menu de fin de partie */
 #gameOver #Calque_1{
-    animation: moveHead 2s linear infinite;
+    animation: moveHead 2s linear infinite; /* Définit l'animation de l'élément */
 }
 
+/* Animation de la partie 1 de l'image du menu de fin de partie */
 @keyframes moveHead {
     0% {
-        transform: translate(0, 0);
+        transform: translate(0, 0); /* Définit la position de l'élément */
     }
     50% {
-        transform: translate(0, 10px);
+        transform: translate(0, 10px); /* Définit la position de l'élément */
     }
     100% {
-        transform: translate(0, 0);
+        transform: translate(0, 0); /* Définit la position de l'élément */
     }
 }
 
+/* Style de la partie 2 de l'image du menu de fin de partie */
 #gameOver #Calque_2{
-    animation: moveMouth 2s linear infinite;
+    animation: moveMouth 2s linear infinite; /* Définit l'animation de l'élément */
 }
 
+/* Animation de la partie 2 de l'image du menu de fin de partie */
 @keyframes moveMouth {
     0% {
-        transform: translate(0, 0);
+        transform: translate(0, 0); /* Définit la position de l'élément */
     }
     50% {
-        transform: translate(0, -10px);
+        transform: translate(0, -10px); /* Définit la position de l'élément */
     }
     100% {
-        transform: translate(0, 0);
+        transform: translate(0, 0); /* Définit la position de l'élément */
     }
 }
 
+/* ################################################################################################################################################## */
+/* #################################################################### FOOTER ###################################################################### */
+/* ################################################################################################################################################## */
+
+/* Style du footer */
 #credits{
-    bottom: 0;
-    position: absolute;
-    z-index: 99999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    user-select: none;
+    bottom: 0; /* Positionne l'élément en bas */
+    position: absolute; /* Définit la position de l'élément */
+    z-index: 99999; /* Définit la position de l'élément par rapport aux autres */
+    display: flex; /* Définit le comportement de l'élément */
+    justify-content: center; /* Centre l'élément horizontalement */
+    align-items: center; /* Centre l'élément verticalement */
+    width: 100%; /* Définit la largeur de l'élément */
+    background-color: rgba(0, 0, 0, 0.5); /* Définit la couleur de l'élément */
+    color: white; /* Définit la couleur de l'élément */
+    user-select: none; /* Empêche la sélection de l'élément */
 }
 
+/* Style du texte du footer */
 #credits h2{
-    margin-bottom: 0;
-    margin-right: 1rem;
-    font-size: 1rem;
-    max-height: 50px;
+    margin-bottom: 0; /* Définit la marge de l'élément */
+    margin-right: 1rem; /* Définit la marge de l'élément */
+    font-size: 1rem; /* Définit la taille de la police de l'élément */
+    max-height: 50px; /* Définit la hauteur maximale de l'élément */
 }
 
+/* Style du lien du footer */
 #credits a{
-    color: white;
-    text-decoration: underline;
-    font-size: 1rem;
+    color: white; /* Définit la couleur de l'élément */
+    text-decoration: underline; /* Définit le style du texte de l'élément */
+    font-size: 1rem; /* Définit la taille de la police de l'élément */
 }
 
+/* Style du coeur du footer */
 #credits .heart{
-    color: red;
-    font-size: 1.75rem;
-    margin-bottom: 10px;
+    color: red; /* Définit la couleur de l'élément */
+    font-size: 1.75rem; /* Définit la taille de la police de l'élément */
+    margin-bottom: 10px; /* Définit la marge de l'élément */
 }
 
-/* ######################################################################### */
-/* ############################## COUNTDOWN ################################ */
-/* ######################################################################### */
+/* ################################################################################################################################################## */
+/* ################################################################## COUNTDOWN ##################################################################### */
+/* ################################################################################################################################################## */
 
+/* Style du conteneur du compte à rebours */
 #countdown {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 360px;
-    height: 360px;
-    filter: url('#filter');
-    transition: 1s;
+    position: absolute; /* Définit la position de l'élément */
+    top: 50%; /* Positionne l'élément au milieu */
+    left: 50%; /* Positionne l'élément au milieu */
+    transform: translate(-50%, -50%); /* Définit la position de l'élément */
+    width: 360px; /* Définit la largeur de l'élément */
+    height: 360px; /* Définit la hauteur de l'élément */
+    filter: url('#filter'); /* Définit le filtre de l'élément */
+    transition: 1s; /* Définit la durée de l'animation de l'élément */
 }
 
-#countdown.hidden {
-    opacity: 0;
-}
-
+/* Style des éléments du compte à rebours */
 .c, .o, .u, .n, .t {
-    width: 50px;
-    height: 50px;
-    position: absolute;
-    top: calc(50% - 50px);
-    left: calc(50% - 50px);
-    background: #D0F0FD;
-    border-radius: 20px;
-    content: '';
-    /* transform: rotate(360deg); */
-    transition: all .50s cubic-bezier(0.950, 0.010, 0.000, 1.000);
-    /*box-shadow: 0 2px 10px rgba(255, 255, 255, .5);*/
+    width: 50px; /* Définit la largeur de l'élément */
+    height: 50px; /* Définit la hauteur de l'élément */
+    position: absolute; /* Définit la position de l'élément */
+    top: calc(50% - 50px); /* Positionne l'élément au milieu */
+    left: calc(50% - 50px); /* Positionne l'élément au milieu */
+    background: #D0F0FD; /* Définit la couleur de l'élément */
+    border-radius: 20px; /* Définit le style des bords de l'élément */
+    content: ''; /* Définit le contenu de l'élément */
+    transition: all .50s cubic-bezier(0.950, 0.010, 0.000, 1.000); /* Définit la durée de l'animation de l'élément */
 }
 
+/* Style du filtre du compte à rebours */
 .countdownDefs{
-    position: absolute;
+    position: absolute; /* Définit la position de l'élément */
 }
 
 .c { transition-delay: 0.05s; }
