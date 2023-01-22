@@ -5,10 +5,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'); /* Import de police distante */
 @font-face {
   font-family: 'Tetrominoes'; /* Import de police locale */
-  src: url('../Assets/fonts/tetrominoes.eot'); /* IE9+ */
-  src: url('../Assets/fonts/tetrominoes.woff2') format('woff2'), /* Navigateurs modernes (Chrome, Firefox, etc.) */
-       url('../Assets/fonts/tetrominoes.woff') format('woff'), /* Navigateurs moins modernes (Safari, IE, etc.) */
-       url('../Assets/fonts/tetrominoes.ttf')  format('truetype'); /* Navigateurs mobiles (Android, iOS, etc.) */
+  src: url('../assets/fonts/tetrominoes.eot'); /* IE9+ */
+  src: url('../assets/fonts/tetrominoes.woff2') format('woff2'), /* Navigateurs modernes (Chrome, Firefox, etc.) */
+       url('../assets/fonts/tetrominoes.woff') format('woff'), /* Navigateurs moins modernes (Safari, IE, etc.) */
+       url('../assets/fonts/tetrominoes.ttf')  format('truetype'); /* Navigateurs mobiles (Android, iOS, etc.) */
 }
 
 /* ################################################################################################################################################## */

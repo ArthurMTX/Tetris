@@ -94,7 +94,7 @@ class TetrisView {
                 if (nextPiece.pattern[i][j] !== 0) {
                     // Applique une texture de block à la pièce
                     const blockTexture = new Image();
-                    blockTexture.src = './Assets/img/block.png';
+                    blockTexture.src = './assets/img/block.png';
                     this.nextPieceCtx.drawImage(blockTexture, j * this.blockSize, i * this.blockSize, this.blockSize, this.blockSize);
 
                     // Applique un overlay de couleur sur le bloc
@@ -149,7 +149,7 @@ class TetrisView {
 
                     // Applique la texture de la pièce
                     const blockTexture = new Image();
-                    blockTexture.src = './Assets/img/block.png';
+                    blockTexture.src = './assets/img/block.png';
                     this.ctx.drawImage(blockTexture, col * this.blockSize, row * this.blockSize, this.blockSize, this.blockSize);
 
                     // Applique un overlay de couleur sur le bloc
