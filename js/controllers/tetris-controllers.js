@@ -7,13 +7,12 @@ export let blockSize;
 export let cols;
 export let rows;
 
-/// Classe qui gère le contrôleur du jeu
+/// Gère le contrôleur du jeu
 ///
 /// Paramétres :
-/// game : instance de la classe TetrisGame
-/// view : instance de la classe TetrisView
+/// aucun
 class TetrisController {
-    constructor(view, model) {
+    constructor() {
         // Booléen pour savoir si le jeu est commencé ou non
         this._gameStarted = false;
 
@@ -22,11 +21,13 @@ class TetrisController {
         this._view = new TetrisView();
         this._piece = new TetrisPiece(-1, 0,0,0,0,0);
 
+        // Définit les variables globales
         pieces = this._piece.pieces;
         blockSize = this._view.blockSize;
         cols = this._model.gridCols;
         rows = this._model.gridRows;
 
+        // Définit les variables de déplacement automatique
         this.autoMove = null;
 
         // Définit les touches de contrôle
@@ -42,12 +43,10 @@ class TetrisController {
             s: 'down',
         };
 
+        // Définit les bindings des fonctions
         this.bindRefreshBoard = this.bindRefreshBoard.bind(this);
         this._model.bindRefreshBoard(this.bindRefreshBoard);
         this._piece.bindRefreshBoard(this.bindRefreshBoard);
-
-        this.bindRemoveLine = this.bindRemoveLine.bind(this);
-        this._view.bindRemoveLine(this.bindRemoveLine);
 
         this.bindUnbindEvents = this.bindUnbindEvents.bind(this);
         this._model.bindUnbindEvents(this.bindUnbindEvents);
@@ -78,6 +77,7 @@ class TetrisController {
 
         // Intancie le contrôle afin de commencer la partie
         document.addEventListener('keydown', (event) => {
+            // Si la touche est espace ou entrée
             if (event.key === ' ' || event.key === 'Enter') {
                 // Vérifie que le jeu n'est pas déjà commencé
                 if (!this._gameStarted){
@@ -87,13 +87,10 @@ class TetrisController {
             }
         });
     }
-    
+
+    // Bindings
     bindRefreshBoard (grid, mode, score, lines, level) {
         this._view.refreshBoard(grid, mode, score, lines, level);
-    }
-
-    bindRemoveLine () {
-        this._model.removeLine();
     }
 
     bindUnbindEvents () {
@@ -120,7 +117,7 @@ class TetrisController {
         this.setScore(score);
     }
 
-    // Getters
+    // Getters & Setters
     get model() {
         return this._model;
     }
@@ -141,10 +138,10 @@ class TetrisController {
         return this._model.level;
     }
 
-    /// Fonction qui gère les événements clavier
+    /// Gère les événements clavier
     ///
     /// Paramétres :
-    /// aucun
+    /// mode : mode de bind (full ou partial)
     bindEvents(mode) {
         // Détecte le mode
         if (mode === 'full'){
@@ -156,12 +153,15 @@ class TetrisController {
                 }
             });
 
+            // Écoute les événements clavier
             document.addEventListener('keydown', (event) => {
+                // Récupère l'action associée à la touche
                 const action = this.keyBindings[event.key];
 
                 // Vérifie que la touche est valide
                 if (!action) return;
 
+                // Récupère la pièce courante
                 let currentPiece = pieces[pieces.length-1];
 
                 // Vérifie si la touche est une rotation ou un déplacement
@@ -188,11 +188,16 @@ class TetrisController {
         }, 1000);
     }
 
+    /// Désactive les événements clavier
+    ///
+    /// Paramétres :
+    /// aucun
     unbindEvents() {
+        // Supprime l'écoute des événements clavier
         clearInterval(this.autoMove);
     }
 
-    /// Méthode qui affiche un compte à rebours avant de lancer la partie
+    /// Affiche un compte à rebours avant de lancer la partie
     ///
     /// Paramétres :
     /// seconds : nombre de secondes du compte à rebours
@@ -200,7 +205,7 @@ class TetrisController {
         // Efface le canvas
         this._view.ctx.clearRect(0, 0, this._view.canvas.width, this._view.canvas.height);
 
-        // Récupère l'élement countdown
+        // Récupère l'élement countdown et les boutons
         let wrap = document.getElementById('countdown');
         let nextPieceCanvas = document.getElementById('next');
         let buttons = document.getElementById('buttons');
@@ -208,51 +213,62 @@ class TetrisController {
         // Si le compte à rebours n'est pas terminé, affiche le nombre de secondes restantes
         // Sinon, cacher la div et lancer la partie
         if (seconds < 0) {
+            // Cache le compte à rebours
             wrap.classList.add('hidden');
+
+            // Affiche le canvas de la prochaine pièce et les boutons
             nextPieceCanvas.classList.remove('hidden');
             buttons.classList.remove('hidden');
+
+            // Lance la partie
             this.model.startNewGame();
         } else {
+            // Affiche le nombre de secondes restantes
             wrap.classList.add('wrap-' + seconds);
+
+            // Lance le compte à rebours
             setTimeout(() => {
+                // Réinitialise la classe de l'élement
                 wrap.removeAttribute('class');
+
+                // Lance le compte à rebours
                 this.countdown_chrono(--seconds);
             }, 1000);
         }
     }
 
-    /// Fonction qui gère le démarrage du jeu
+    /// Gère le démarrage du jeu
     /// Réinstancie les objects visuels et logiques du jeu
     ///
     /// Paramétres :
     /// Aucun
     start() {
-        // Récupère les valeurs de la taille de la grid
+        // Récupère les valeurs de la taille de la grid entrées par l'utilisateur
         const rows = document.querySelector('#rows').value;
         const cols = document.querySelector('#cols').value;
 
-        // Accéde aux valeurs max de la taille de la grid
+        // Accéde aux valeurs maximales et minimales de la grid
         const max_cols = document.getElementById("cols").max;
         const max_rows = document.getElementById("rows").max;
         const min_cols = document.getElementById("cols").min;
         const min_rows = document.getElementById("rows").min;
 
         // Vérifie que la taille de la grid est valide
-        if (rows > max_rows ||
-            cols > max_cols ||
-            rows < min_rows ||
-            cols < min_cols) {
+        if (rows > max_rows || cols > max_cols || rows < min_rows || cols < min_cols) {
+            // Affiche un message d'erreur
             const gridSizeError = 'La taille de la grille est invalide. Veuillez choisir une taille entre '
                 + min_rows + ' et ' + max_rows + ' pour les lignes et entre ' + min_cols +
                 ' et ' + max_cols + ' pour les colonnes.'
             console.log(gridSizeError);
             alert(gridSizeError);
+
+            // Réinitialise le jeu
             this._gameStarted = false;
             return;
         }
 
         // Réinstancie les objets visuels et logiques du jeu
-        const game = new TetrisGame(rows, cols);
+        new TetrisGame(rows, cols);
 
         // Cache la page de fin de jeu
         document.querySelector('#gameOver').classList.add('hidden');
@@ -268,7 +284,12 @@ class TetrisController {
         }, 3000);
     }
 
+    /// Redémarre le jeu
+    ///
+    /// Paramétres :
+    /// aucun
     restart() {
+        // Réinitialise le jeu
         this.unbindEvents();
         this._gameStarted = true;
 
@@ -277,7 +298,7 @@ class TetrisController {
         const cols = document.querySelector('#cols').value;
 
         // Réinstancie les objets visuels et logiques du jeu
-        const game = new TetrisGame(rows, cols);
+        new TetrisGame(rows, cols);
 
         // Cache la page de fin de jeu
         document.querySelector('#gameOver').classList.add('hidden');
@@ -290,19 +311,21 @@ class TetrisController {
         // Récupère la hauteur et la largeur de la grille
         let gridHeight = this._model.grid.length;
         let gridWidth = this._model.grid[0].length;
-        // Pour chaque ligne
+
+        // Pour chaque ligne de la grille
         for (let row = 0; row < gridHeight; row++) {
-            // Pour chaque colonne
+            // Pour chaque colonne de la grille
             for (let col = 0; col < gridWidth; col++) {
                 // Si l'identifiant de la pièce est égal à l'identifiant de la pièce actuelle
                 // Supprime l'identifiant de la pièce de la grille
                 this._model.grid[row][col] = 0
-
             }
         }
 
         // Affiche le compte à rebours
         this.countdown_chrono(4);
+
+        // Lance la partie après 4 secondes
         setTimeout(() => {
             this.bindEvents('partial');
         }, 4000);

@@ -1,4 +1,3 @@
-import {pieces} from "../controllers/tetris-controllers.js";
 /// Classe qui gère les pièces
 ///
 /// Paramétres :
@@ -7,23 +6,21 @@ import {pieces} from "../controllers/tetris-controllers.js";
 /// color : couleur de la pièce
 /// col : colonne de la pièce
 /// row : ligne de la pièce
-/// rotation : rotation de la pièce
-
 class TetrisPiece {
-    constructor(id, shape, color, col, row, rotation) {
+    constructor(id, shape, color, col, row) {
+        // Identifiant, forme, couleur, colonne et ligne de la pièce
         this.id = id;
         this.shape = shape;
         this.color = color;
         this.col = col;
         this.row = row;
-        this.currentRotation = rotation;
 
-        this.darkColor = this.getShade(this.color);
+        // Liste des blocs et des pièces
         this.blocks = [];
         this.pieces = [];
 
         // Paterne de la pièce en fonction de sa forme
-        this.pattern = this.getPattern(shape);
+        this.pattern = this.getPattern(this.shape);
 
         // Dimension de la pièce en fonction de son paterne
         this.cols = this.pattern[0].length;
@@ -44,7 +41,27 @@ class TetrisPiece {
         }
     }
 
-    /// Méthode qui retourne le paterne de la pièce en fonction de sa forme
+    bindRefreshBoard(callback){
+        this.refreshBoard = callback;
+    }
+
+    bindGetScore(bindGetScore) {
+        this.getScore = bindGetScore;
+    }
+
+    bindGetLevel(bindGetLevel) {
+        this.getLevel = bindGetLevel;
+    }
+
+    bindGetLines(bindGetLines) {
+        this.getLines = bindGetLines;
+    }
+
+    bindSetScore(bindSetScore) {
+        this.setScore = bindSetScore;
+    }
+
+    /// Retourne le paterne de la pièce en fonction de sa forme
     ///
     /// Paramétres :
     /// shape : forme de la pièce (I, J, L, O, S, T, Z)
@@ -103,56 +120,29 @@ class TetrisPiece {
         }
     }
 
-    getShade(color) {
-        switch (color) {
-            case 'cyan':
-                return '#00A4A4';
-            case 'blue':
-                return '#0000A4';
-            case 'orange':
-                return '#A46B00';
-            case 'purple':
-                return '#520052';
-            case 'green':
-                return '#005200';
-            case 'yellow':
-                return '#929200';
-            case 'red':
-                return '#800000';
-            default:
-                return '#000000';
-        }
-    }
-
-    /// Méthode qui retourne les coordonnées de la pièce
+    /// Retourne la pièce dans le sens horaire
     ///
     /// Paramétres :
-    /// piece : pièce 
-    static getCoords(piece) {
-        let coords = [];
-
-        // Pour chaque case de la pièce (différente de 0), 
-        // ajoute les coordonnées de la case à la liste des coordonnées de la pièce
-        for (let row = 0; row < piece.rows; row++) {
-            for (let col = 0; col < piece.cols; col++) {
-                if (piece.pattern[row][col] === 1) {
-                    coords.push([piece.row + row, piece.col + col]);
-                }
-            }
-        }
-
-        return coords;
-    }
-
+    /// id : identifiant de la pièce
+    /// grid : grille de jeu
     rotateClockwise(id,grid) {
+        // Récupère la pièce actuelle
         let currentPiece = this.pieces[id];
+
+        // Liste des points de la pièce et des nouveaux points
         let points = [];
         let newPoints = [];
+
+        // Booléen qui indique si le mouvement est impossible
         let impossibleMouvement = false;
+
+        // Taille de la grille
         let gridHeight = grid.length;
         let gridWidth = grid[0].length;
+
+        // Pour chaque ligne de la grille
         for (let row = 0; row < gridHeight; row++) {
-            // Pour chaque colonne
+            // Pour chaque colonne de la grille
             for (let col = 0; col < gridWidth; col++) {
                 // Si l'identifiant de la pièce est égal à l'identifiant de la pièce actuelle
                 if (grid[row][col] === id) {
@@ -168,7 +158,7 @@ class TetrisPiece {
         // Prends le premier point de la pièce
         let firstPoint = points[2];
 
-        // Pour chaque point de la pièce
+        // Pour chaque points de la pièce
         for (let i = 0; i < points.length; i++) {
             // Calcule les coordonnées du point en fonction de la rotation
             let newPoint = {
@@ -206,37 +196,34 @@ class TetrisPiece {
                 // Vide la case de la grille
                 grid[points[i].row][points[i].col] = 0;
             }
+
             // Pour chaque nouvelle coordonnée de la pièce
             for (let i = 0; i < newPoints.length; i++) {
                 // Remplit la case de la grille
                 grid[newPoints[i].row][newPoints[i].col] = id;
             }
-            // Incrémente la rotation de la pièce
-            currentPiece.currentRotation++;
-            // Si la rotation de la pièce est égale à 4
-            if (currentPiece.currentRotation === 4) {
-                // Réinitialise la rotation de la pièce
-                currentPiece.currentRotation = 0;
-            }
         }
 
+        // Met à jour la grille
         this.refreshBoard(grid, 'full', this.getScore(), this.getLevel(), this.getLines());
     }
 
-    bindRefreshBoard(callback){
-        this.refreshBoard = callback;
-    }
-
+    /// Fait descendre la pièce jusqu'en bas ou une autre pièce
+    ///
+    /// Paramétres :
+    /// id : identifiant de la pièce
+    /// grid : grille de jeu
     dropDown(id, grid) {
-        // Récupère la pièce dans la liste des pièces
-        let currentPiece = pieces.find(piece => piece.id === id);
-
+        // Booléen qui indique si le mouvement est impossible
         let impossibleMouvement = false;
+
+        // Taille de la grille
         let gridHeight = grid.length;
         let gridWidth = grid[0].length;
 
         // Fait descendre la pièce jusqu'à ce qu'elle touche le sol ou une autre pièce
         while (!impossibleMouvement) {
+            // Liste des points de la pièce et des nouveaux points
             let points = [];
             let newPoints = [];
 
@@ -280,14 +267,10 @@ class TetrisPiece {
                 newPoints.push(newPoint);
             }
 
+            // Si la pièce existe
             if (points.length !== 0 || newPoints.length !== 0) {
                 // Si le mouvement est possible
                 if (!impossibleMouvement) {
-                    // Get canvas
-                    let canvas = document.getElementById("tetris");
-                    // Get context
-                    let ctx = canvas.getContext("2d");
-
                     // Pour chaque point de la pièce
                     for (let i = 0; i < points.length; i++) {
                         // Vide la case de la grille
@@ -300,30 +283,18 @@ class TetrisPiece {
                         grid[newPoints[i].row][newPoints[i].col] = id;
                     }
 
+                    // Actualise le score en fonction du nombre de lignes qu'a parcouru la pièce en tombant
                     this.score = this.getScore() + points.length;
                     this.setScore(this.score);
                 }
             } else {
+                // Impossible de faire descendre la pièce
                 impossibleMouvement = true;
             }
         }
+
+        // Met à jour la grille
         this.refreshBoard(grid, 'full', this.getScore(), this.getLevel(), this.getLines());
-    }
-
-    bindGetScore(bindGetScore) {
-        this.getScore = bindGetScore;
-    }
-
-    bindGetLevel(bindGetLevel) {
-        this.getLevel = bindGetLevel;
-    }
-
-    bindGetLines(bindGetLines) {
-        this.getLines = bindGetLines;
-    }
-
-    bindSetScore(bindSetScore) {
-        this.setScore = bindSetScore;
     }
 }
 
