@@ -45,10 +45,10 @@ class TetrisView {
                     this.nextPieceCtx.drawImage(blockTexture, j * this.blockSize, i * this.blockSize, this.blockSize, this.blockSize);
 
                     // Applique un overlay de couleur sur le bloc
-                    //this.nextPieceCtx.globalAlpha = 0.7;
+                    this.nextPieceCtx.globalAlpha = 0.7;
                     this.nextPieceCtx.fillStyle = nextPiece.color;
                     this.nextPieceCtx.fillRect(j * this.blockSize, i * this.blockSize, this.blockSize, this.blockSize);
-                    //this.nextPieceCtx.globalAlpha = 1;
+                    this.nextPieceCtx.globalAlpha = 1;
                 }
             }
         }
@@ -106,7 +106,7 @@ class TetrisView {
     ///
     /// Paramétres :
     /// grid : grille de jeu
-    refreshBoard(grid, mode) {
+    refreshBoard(grid, mode, score, level, lines) {
         // Dessine les traits de la grille
         const gridWidth = grid[0].length;
         const gridHeight = grid.length;
@@ -147,17 +147,17 @@ class TetrisView {
                     this.ctx.drawImage(blockTexture, col * this.blockSize, row * this.blockSize, this.blockSize, this.blockSize);
 
                     // Applique un overlay de couleur sur le bloc
-                    //this.ctx.globalAlpha = 0.7;
+                    this.ctx.globalAlpha = 0.7;
                     this.ctx.fillStyle = piece.color;
                     this.ctx.fillRect(col * this.blockSize, row * this.blockSize, this.blockSize, this.blockSize);
-                    //this.ctx.globalAlpha = 1;
+                    this.ctx.globalAlpha = 1;
                 }
             }
         }
 
-        // Si une ligne est complète, la supprime
-        this.removeLine();
-        //this.detectGameOver(grid);
+        document.getElementById('score').innerHTML = score;
+        document.getElementById('level').innerHTML = level;
+        document.getElementById('lines').innerHTML = lines;
 
         this.drawGrid(gridWidth, gridHeight);
 
@@ -168,18 +168,6 @@ class TetrisView {
 
     bindRemoveLine(bindRemoveLine) {
         this.removeLine = bindRemoveLine;
-    }
-
-    detectGameOver(grid) {
-        let gridCols = grid[0].length;
-        let gridRows = grid.length;
-
-        for (let col = 0; col < gridCols; col++) {
-            if (grid[0][col] !== 0 && grid[1][col] !== 0) {
-                console.log('Game Over');
-                this.gameOver = true;
-            }
-        }
     }
 }
 

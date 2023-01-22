@@ -10,6 +10,11 @@ class TetrisGame {
     constructor(rows, cols) {
         this.gridRows = rows;
         this.gridCols = cols;
+
+        this.score = 0;
+        this.lines = 0;
+        this.level = 1;
+        this.time = 0;
     }
 
     /// Fonction qui crée une grille vide
@@ -66,14 +71,39 @@ class TetrisGame {
             newPiece.blocks.forEach(block => {
                 this.grid[block.row][block.col] = newPiece.id;
             });
+            console.log(newPiece.blocks);
             // Rafraichit la grille
-            this.refreshBoard(this.grid,'partial');
+            this.refreshBoard(this.grid, 'partial', this.score, this.level, this.lines);
         } else {
             // Rafraichit la grille
-            this.refreshBoard(this.grid, 'full');
+            this.refreshBoard(this.grid, 'full', this.score, this.level, this.lines);
         }
 
         return newPiece;
+    }
+
+    timer(){
+        this.time = 0;
+        let seconds = 0;
+        let minutes = 0;
+        let hours = 0;
+        this.time = setInterval(() => {
+            if (this.gameOver === false) {
+                seconds++;
+                if (seconds === 60) {
+                    minutes++;
+                    seconds = 0;
+                }
+                if (minutes === 60) {
+                    hours++;
+                    minutes = 0;
+                }
+                this.time = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                document.querySelector('#timer').innerHTML = this.time;
+            } else {
+                clearInterval(this.time);
+            }
+        }, 1000);
     }
 
     /// Méthode qui démarre une nouvelle partie
@@ -91,10 +121,15 @@ class TetrisGame {
         this.currentPiece = this.createRandomPiece();
         this.nextPiece = this.createRandomPiece('ignore');
 
-
-        // Réinitialise le score 
+        // Réinitialise le score
         this.score = 0;
+        this.lines = 0;
+        this.level = 1;
         this.gameOver = false;
+
+        // clear le timer
+        clearInterval(this.time);
+        this.timer();
     }
 
     removeLine() {
@@ -110,8 +145,9 @@ class TetrisGame {
                         }
                     }
                 }
-                this.refreshBoard(this.grid, 'partial');
-                this.score += 10;
+                this.refreshBoard(this.grid, 'partial', this.score, this.level, this.lines);
+                this.score += 100;
+                this.lines += 1;
             }
         }
     }
@@ -122,16 +158,28 @@ class TetrisGame {
         // Arrête le jeu
         this.gameOver = true;
         // Affiche le message de fin de partie
-        document.querySelector('#game-over').style.display = 'block';
-        document.querySelector('#game-over').style.zIndex = '99999';
+        document.querySelector('#gameOver').style.display = 'flex';
+        document.querySelector('#gameOver').style.zIndex = '99999';
         this.unbindEvents();
+
+        // Affiche le score
+        document.querySelector('#gameOverScore').innerHTML = this.score;
+
+        // Affiche le niveau
+        document.querySelector('#gameOverLevel').innerHTML = this.level;
+
+        // Affiche les lignes
+        document.querySelector('#gameOverLines').innerHTML = this.lines;
+
+        // Affiche le temps
+        document.querySelector('#gameOverTime').innerHTML = this.time;
     }
 
     /// Fonction qui déplace la pièce
     ///
     /// Paramétres :
     /// direction : direction du déplacement
-    movePiece(direction) {
+    movePiece(direction, mode) {
         // Tri le tableau des pièces par ordre croissant de leur ID
         pieces.sort((a, b) => a.id - b.id);
 
@@ -153,7 +201,6 @@ class TetrisGame {
 
         // Parcourt la grille pour récupérer les points de la pièce actuelle
         // Pour chaque ligne
-
         for (let row = 0; row < gridHeight; row++) {
             // Pour chaque colonne
             for (let col = 0; col < gridWidth; col++) {
@@ -233,7 +280,15 @@ class TetrisGame {
         });
 
         // Si le mouvement n'est pas impossible
-        if (!impossibleMouvement){
+        if (!impossibleMouvement) {
+
+            if (mode === 'detect'){
+                // Réinitialiser le mouvement
+                points.forEach(point => {
+                    this.grid[point.row][point.col] = this.currentPiece.id;
+                })
+                return 1;
+            }
 
             // Déplacer la pièce dans la direction spécifiée en parcourant les points de la pièce
             switch (direction) {
@@ -286,6 +341,7 @@ class TetrisGame {
                         this.grid[point.row][point.col] = this.currentPiece.id
                     })
 
+                    this.score += 1;
                     break;
                 default:
                     console.log("Direction non reconnue");
@@ -293,7 +349,7 @@ class TetrisGame {
             }
 
             // Actualiser l'affichage de la grille
-            this.refreshBoard(this.grid, this.nextPiece)
+            this.refreshBoard(this.grid, 'full', this.score, this.level, this.lines);
             return 1;
 
         } else {
@@ -316,6 +372,8 @@ class TetrisGame {
 
     play() {
         if (this.movePiece('down') === 0) {
+            this.removeLine();
+
             // Si la pièce ne peut pas descendre, on en crée une nouvelle
             this.currentPiece = this.nextPiece;
             this.currentPiece.id = pieces.length;
@@ -326,14 +384,18 @@ class TetrisGame {
 
             this.nextPiece = this.createRandomPiece('ignore');
 
+            console.log(this.currentPiece)
+
             // Regarde si la pièce peut être placée a la position initiale
-            if (this.movePiece('down') === 0) {
+            if (this.movePiece('down', 'detect') === 0) {
                 // Si la pièce ne peut pas être placée, c'est la fin de la partie
                 this.unbindEvents();
+                this.endGame();
 
                 // Affiche le message de fin de partie
-                document.getElementById('gameOver').style.display = 'absolute';
                 console.log("Game Over");
+            } else {
+
             }
         }
     }

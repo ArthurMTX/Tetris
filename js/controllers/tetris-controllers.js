@@ -52,8 +52,17 @@ class TetrisController {
         this.bindUnbindEvents = this.bindUnbindEvents.bind(this);
         this._model.bindUnbindEvents(this.bindUnbindEvents);
 
-        //this.bindEndGame = this.bindEndGame.bind(this);
-        //this._view.bindEndGame(this.bindEndGame);
+        this.bindGetScore = this.bindGetScore.bind(this);
+        this._piece.bindGetScore(this.bindGetScore);
+
+        this.bindGetLines = this.bindGetLines.bind(this);
+        this._piece.bindGetLines(this.bindGetLines);
+
+        this.bindGetLevel = this.bindGetLevel.bind(this);
+        this._piece.bindGetLevel(this.bindGetLevel);
+
+        this.bindSetScore = this.bindSetScore.bind(this);
+        this._piece.bindSetScore(this.bindSetScore);
 
         // Intancie le contrôle afin de commencer la partie
         document.querySelector('#start').addEventListener('click', () => {
@@ -76,8 +85,8 @@ class TetrisController {
         });
     }
     
-    bindRefreshBoard (grid, nextPiece) {
-        this._view.refreshBoard(grid, nextPiece);
+    bindRefreshBoard (grid, mode, score, lines, level) {
+        this._view.refreshBoard(grid, mode, score, lines, level);
     }
 
     bindRemoveLine () {
@@ -88,9 +97,41 @@ class TetrisController {
         this.unbindEvents();
     }
 
+    bindGetScore () {
+        return this.getScore();
+    }
+
+    bindGetLines () {
+        return this.getLines();
+    }
+
+    bindGetLevel () {
+        return this.getLevel();
+    }
+
+    bindSetScore (score) {
+        this.setScore(score);
+    }
+
     // Getters
     get model() {
         return this._model;
+    }
+
+    getScore() {
+        return this._model.score;
+    }
+
+    setScore(score) {
+        this._model.score = score;
+    }
+
+    getLines() {
+        return this._model.lines;
+    }
+
+    getLevel() {
+        return this._model.level;
     }
 
     /// Fonction qui gère les événements clavier

@@ -220,7 +220,7 @@ class TetrisPiece {
             }
         }
 
-        this.refreshBoard(grid,'full');
+        this.refreshBoard(grid, 'full', this.getScore(), this.getLevel(), this.getLines());
     }
 
     bindRefreshBoard(callback){
@@ -299,12 +299,31 @@ class TetrisPiece {
                         // Remplit la case de la grille
                         grid[newPoints[i].row][newPoints[i].col] = id;
                     }
+
+                    this.score = this.getScore() + points.length;
+                    this.setScore(this.score);
                 }
             } else {
                 impossibleMouvement = true;
             }
         }
-        this.refreshBoard(grid,'full');
+        this.refreshBoard(grid, 'full', this.getScore(), this.getLevel(), this.getLines());
+    }
+
+    bindGetScore(bindGetScore) {
+        this.getScore = bindGetScore;
+    }
+
+    bindGetLevel(bindGetLevel) {
+        this.getLevel = bindGetLevel;
+    }
+
+    bindGetLines(bindGetLines) {
+        this.getLines = bindGetLines;
+    }
+
+    bindSetScore(bindSetScore) {
+        this.setScore = bindSetScore;
     }
 }
 
