@@ -303,7 +303,7 @@ body {
     display: flex; /* Définit le comportement de l'élément */
     justify-content: center; /* Centre l'élément horizontalement */
     align-items: center; /* Centre l'élément verticalement */
-    width: 15%; /* Définit la largeur de l'élément */
+    width: fit-content; /* Définit la largeur de l'élément */
     margin-top: 1rem; /* Définit la marge de l'élément */
 }
 
